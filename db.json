@@ -1,0 +1,40 @@
+{
+  "channels": [
+    {
+      "channelName": "Whereabouts",
+      "users": [
+        {
+          "userName": "asdad",
+          "email": "syedahsan13@hotmail.com"
+        },
+        {
+          "userName": "ahsan",
+          "email": "k191475@nu.edu.pk"
+        }
+      ],
+      "id": 2
+    },
+    {
+      "channelName": "QA Team",
+      "users": [
+        {
+          "userName": "asdad",
+          "email": "syedahsan13@hotmail.com"
+        },
+        {
+          "userName": "ahsan",
+          "email": "k191475@nu.edu.pk"
+        }
+      ],
+      "id": 3
+    }
+  ],
+  "ExistingChannels": [
+    {
+      "Name": "Whereabouts"
+    },
+    {
+      "Name": "QA Team"
+    }
+  ]
+}
