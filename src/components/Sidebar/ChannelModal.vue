@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-row justify="center" style="margin-top: 15px; margin-left: 25px">
     <v-dialog v-model="dialog" persistent max-width="600px">
       <template v-slot:activator="{ on, attrs }">
@@ -210,4 +210,4 @@ p {
 }
 </style>
 // addChannels() { // // console.log(this.newChannel); //
-this.$refs.anyName.reset(); // },
+this.$refs.anyName.reset(); // }, -->

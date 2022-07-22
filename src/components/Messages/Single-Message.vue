@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <v-sheet class="container">
       <img src="../../assets/avatar2.jpeg" alt="Avatar" />
@@ -70,4 +70,4 @@ body {
   float: left;
   color: #999;
 }
-</style>
+</style> -->

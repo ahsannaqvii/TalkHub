@@ -95,7 +95,7 @@
 import { mapActions } from "vuex";
 
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
-import Example from "@/components/example.vue";
+import Example from "@/components/Msc/example.vue";
 export default {
   methods: {
     ...mapActions(["setUser", "fetchChannels"]),

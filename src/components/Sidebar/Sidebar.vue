@@ -8,22 +8,7 @@
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
-        <section class="sidebar-user">
-          <div class="sidebar-user-info">
-            <h4>USER NAME</h4>
-            <div>
-              <v-icon style="color: white; height: 20px">mdi-arrow-down</v-icon>
-            </div>
-          </div>
-          <!-- <p class="sidebar-user-info-additional">
-                <i class="fas fa-circle"></i>Sharon Robinson
-              </p> -->
-          <span class="user-edit-icon"
-            ><v-icon class="user-edit-icon-actual"
-              >mdi-account-edit</v-icon
-            ></span
-          >
-        </section>
+        <ConnectedUser />
         <section class="unread">
           <h4 class="unread-header">
             <span class="unread-icons">
@@ -47,22 +32,64 @@
             </li>
           </ul>
         </section>
-        <ChannelsExample Name="CHANNELS" />
-        <ChannelsExample Name="DIRECT MESSAGES" />
+        <ChannelsInfo Name="CHANNELS" :userChannels="userChannels" />
+        <ChannelsInfo Name="DIRECT MESSAGES" />
       </article>
     </section>
   </main>
+  <!-- 
+      <v-list class="pl-14 ma-5" shaped>
+        <v-list-item v-for="channel in userChannels" :key="channel.id" link>
+          <v-list-item-content>
+            <button
+              :class="{ is_active: setActiveChannel(channel) }"
+              @dblclick="changeChannel(channel)"
+            >
+              {{ channel.channelName }}
+            </button>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list> -->
+  <!-- </v-navigation-drawer> -->
+  <!-- User inputs the msgs and firebase handles it then  -->
+  <!-- <ChannelChat /> -->
+  <!-- </v-app> -->
 </template>
 
 <script>
-import ChannelsExample from "./components/Msc/channelsExample.vue";
+import ConnectedUser from "./ConnectedUser.vue";
+import ChannelsInfo from "../Channels/ChannelsInfo.vue";
+import { mapActions } from "vuex";
+
 export default {
-  methods: {},
-  name: "ExAmple2",
-  data: () => ({
-    files: [],
-  }),
-  components: { ChannelsExample },
+  data() {
+    return {
+      clicked: false,
+    };
+  },
+  name: "Side-bar",
+  // mounted() {
+  //   this.setDefaultChannel();
+  // },
+  methods: {
+    // , "setCurrentChannel"
+    ...mapActions(["fetchChannels"]),
+    // setActiveChannel(channel) {
+    //   return (
+    //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
+    //     channel.channelName === this.$store.getters.currentChannel.channelName
+    //   );
+    // },
+    // changeChannel(channel) {
+    //   this.$store.dispatch("setCurrentChannel", channel); //CURRENT CHANNEL RETRIEVAL
+    // },
+  },
+
+  created() {
+    this.fetchChannels();
+  },
+  // computed: mapGetters(["userChannels", "currentChannel"]),
+  components: { ConnectedUser, ChannelsInfo },
 };
 </script>
 
@@ -129,61 +156,6 @@ ul {
   color: white;
 }
 
-/* USER INFO  */
-.sidebar-2 {
-  grid-column: 2 / -1;
-  overflow: auto;
-}
-.sidebar-user {
-  color: white;
-  position: relative;
-}
-.sidebar-user-info {
-  display: flex;
-  align-items: center;
-  margin: 1rem 0 0.1rem 0.5rem;
-  font-weight: bold;
-}
-.sidebar-user-info h4 {
-  font-size: 1rem;
-  margin-right: 0.5rem;
-}
-.sidebar-user-info i {
-  font-size: 0.5rem;
-}
-.sidebar-user-info-additional {
-  display: flex;
-  align-items: center;
-  margin-left: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.8rem;
-  color: white;
-}
-.sidebar-user-info-additional i {
-  color: green;
-  font-size: 0.5rem;
-  padding-right: 0.3rem;
-}
-.user-edit-icon {
-  position: absolute;
-  top: 0;
-  right: 1rem;
-  width: 2rem;
-  height: 2rem;
-  border: 0.1rem solid white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-}
-.user-edit-icon-actual {
-  color: white;
-  height: 2px;
-}
-
-/* user info ends */
-
 /* READ / UNREAD MSGS  */
 .unread {
   margin-top: 20px;
@@ -210,3 +182,11 @@ ul {
   text-align: justify;
 }
 </style>
+
+<!-- ----------------------------------------------------------------------  -->
+// setDefaultChannel() { // console.log("DID IT MOUNT?"); //
+console.log(this.userChannels[0]) // const [first]=this.userChannels //
+console.log([first]) // if (this.userChannels) { //
+this.$store.dispatch("setCurrentChannel", this.userChannels[0]); //CURRENT
+CHANNEL RETRIEVAL // console.log("working?"); // } else { // console.log("NOT
+WORKING?"); // } // },

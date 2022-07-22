@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-app>
     <v-main>
       <div class="top-headline">
@@ -171,4 +171,4 @@ export default {
   /* margin-left: 3px; */
 }
 </style>
-// const timestamp = // console.log(firebase.database.ServerValue.TIMESTAMP);
+// const timestamp = // console.log(firebase.database.ServerValue.TIMESTAMP); -->
