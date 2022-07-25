@@ -30,6 +30,7 @@
         >
           <!--"
         //     :class="{ is_active: setActiveChannel(channel) }" -->
+          <!-- TODO: TIME MILA TOU UPDATE(Replace dialog box with channel list) THIS CHANNEL AND DIRECT MSGS SECTION  -->
           <v-list-item-title
             depressed
             style="display: flex"
@@ -37,7 +38,7 @@
             @click="changeChannel(channel)"
           >
             <h4 style="font-size: 20px; margin-right: 5px">#</h4>
-            <!-- <v-icon style="color: white">mdi-moon-full</v-icon> -->
+
             {{ channel.channelName }}</v-list-item-title
           >
         </v-list-item>
@@ -53,8 +54,17 @@ export default {
   methods: {
     ...mapActions(["fetchChannels", "setCurrentChannel"]),
     changeChannel(channel) {
+      // TODO:ACTIVE WALA KAAM REHTA HAI
+      // setActiveChannel(channel) {
+      //   return (
+      //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
+      //     channel.channelName === this.$store.getters.currentChannel.channelName
+      //   );
+      // },
       this.active = true;
-      this.$store.dispatch("setCurrentChannel", channel); //CURRENT CHANNEL RETRIEVAL
+      // Retrieve the current channel
+      this.$store.dispatch("setCurrentChannel", channel);
+      this.$emit("changeMode", "channel-chat");
     },
   },
   computed: mapGetters(["userChannels", "currentChannel"]),
@@ -62,6 +72,7 @@ export default {
   props: {
     Name: String,
     userChannels: Array,
+    showForm: String,
   },
   name: "ChannelInfo",
   data: () => ({

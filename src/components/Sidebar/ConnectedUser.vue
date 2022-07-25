@@ -35,7 +35,6 @@ export default {
 </script>
 
 <style>
-/* USER INFO   */
 .sidebar-2 {
   grid-column: 2 / -1;
   overflow: auto;
@@ -88,5 +87,4 @@ export default {
   height: 2px;
 }
 
-/* user info ends */
 </style>

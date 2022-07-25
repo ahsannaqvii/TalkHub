@@ -123,10 +123,10 @@ export default {
 }
 .search-bar-input:focus {
   background-color: var(--slack-background);
-  color: var(--slack-white);
+  color: var(white);
 }
 .search-bar-input::placeholder {
-  color: var(--slack-white);
+  color: var(white);
 }
 .user-img-wrapper {
   margin-top: 17px;

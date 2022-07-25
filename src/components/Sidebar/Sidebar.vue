@@ -4,7 +4,8 @@
       <div class="sidebar-1">
         <div class="box-1"></div>
         <div class="box-2"></div>
-        <div class="box-3">+</div>
+        <button class="box-3" @click="setModalActive()">+</button>
+        <!-- <ChannelModal v-show="showModal" /> -->
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
@@ -32,39 +33,38 @@
             </li>
           </ul>
         </section>
-        <ChannelsInfo Name="CHANNELS" :userChannels="userChannels" />
-        <ChannelsInfo Name="DIRECT MESSAGES" />
+        <ChannelsInfo
+          Name="CHANNELS"
+          :userChannels="userChannels"
+          :showForm="showForm"
+          v-on:changeMode="changeScreen($event)"
+        />
+        <ChannelsInfo
+          Name="DIRECT MESSAGES"
+          :showForm="showForm"
+          v-on:changeMode="changeScreen($event)"
+        />
       </article>
     </section>
+    <component v-bind:is="showForm"></component>
+    <ChannelChat />
   </main>
-  <!-- 
-      <v-list class="pl-14 ma-5" shaped>
-        <v-list-item v-for="channel in userChannels" :key="channel.id" link>
-          <v-list-item-content>
-            <button
-              :class="{ is_active: setActiveChannel(channel) }"
-              @dblclick="changeChannel(channel)"
-            >
-              {{ channel.channelName }}
-            </button>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list> -->
-  <!-- </v-navigation-drawer> -->
-  <!-- User inputs the msgs and firebase handles it then  -->
-  <!-- <ChannelChat /> -->
-  <!-- </v-app> -->
 </template>
 
 <script>
 import ConnectedUser from "./ConnectedUser.vue";
 import ChannelsInfo from "../Channels/ChannelsInfo.vue";
+import ChannelChat from "../Messages/ChannelChat.vue";
+
 import { mapActions } from "vuex";
+import ChannelModal from "../Channels/ChannelModal.vue";
 
 export default {
+  watch: {},
   data() {
     return {
       clicked: false,
+      showForm: "channel-chat",
     };
   },
   name: "Side-bar",
@@ -72,24 +72,23 @@ export default {
   //   this.setDefaultChannel();
   // },
   methods: {
-    // , "setCurrentChannel"
     ...mapActions(["fetchChannels"]),
-    // setActiveChannel(channel) {
-    //   return (
-    //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
-    //     channel.channelName === this.$store.getters.currentChannel.channelName
-    //   );
-    // },
-    // changeChannel(channel) {
-    //   this.$store.dispatch("setCurrentChannel", channel); //CURRENT CHANNEL RETRIEVAL
-    // },
+    setModalActive() {
+      this.showForm = "channel-modal";
+    },
+    changeScreen(updatedTitle) {
+      this.showForm = updatedTitle;
+    },
   },
-
   created() {
     this.fetchChannels();
   },
-  // computed: mapGetters(["userChannels", "currentChannel"]),
-  components: { ConnectedUser, ChannelsInfo },
+  components: {
+    ConnectedUser,
+    ChannelsInfo,
+    "channel-chat": ChannelChat,
+    "channel-modal": ChannelModal,
+  },
 };
 </script>
 
@@ -184,9 +183,9 @@ ul {
 </style>
 
 <!-- ----------------------------------------------------------------------  -->
-// setDefaultChannel() { // console.log("DID IT MOUNT?"); //
+<!-- // setDefaultChannel() { // console.log("DID IT MOUNT?"); //
 console.log(this.userChannels[0]) // const [first]=this.userChannels //
 console.log([first]) // if (this.userChannels) { //
 this.$store.dispatch("setCurrentChannel", this.userChannels[0]); //CURRENT
 CHANNEL RETRIEVAL // console.log("working?"); // } else { // console.log("NOT
-WORKING?"); // } // },
+WORKING?"); // } // }, -->

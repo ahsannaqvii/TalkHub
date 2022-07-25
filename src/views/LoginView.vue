@@ -63,11 +63,12 @@
                   </div>
                   <Example />
                 </v-col>
-                <v-col cols="12" md="4" style="background-color: #880e4f">
+                <v-col cols="12" md="4" style="background-color: #350d36">
                   <v-card-text class="white--text mt-12">
-                    <h1 class="text-center display-1">Hello, Friend!</h1>
+                    <h1 class="text-center display-1">Hello, Slackie!</h1>
                     <h5 class="text-center">
-                      Enter your personal details and start journay with us
+                      Register yourself with us and communicate with your
+                      organization
                     </h5>
                   </v-card-text>
                   <div class="error-ui-message" v-if="hasErrors">
@@ -95,7 +96,6 @@
 import { mapActions } from "vuex";
 
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
-import Example from "@/components/Msc/example.vue";
 export default {
   methods: {
     ...mapActions(["setUser", "fetchChannels"]),
@@ -110,7 +110,7 @@ export default {
             this.email,
             this.password
           );
-            console.log("login : ", user);
+          console.log("login : ", user);
           this.setUser(user);
           // user
           this.fetchChannels(user);
@@ -143,7 +143,6 @@ export default {
   props: {
     source: String,
   },
-  components: { Example },
 };
 </script>
 <style scoped>

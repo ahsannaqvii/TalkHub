@@ -267,7 +267,7 @@ p {
   text-align: center;
 }
 </style>
-// // // signOut(auth).then(() => { // // Sign-out successful. //
+<!-- // // // signOut(auth).then(() => { // // Sign-out successful. //
 }).catch((error) => { // // An error happened. // }); // tempFunction() { //
 console.log("WOKRING"); // // var usersRef1 = getDatabase.ref("users"); // //
 console.log("LOVE" + usersRef1); // const db = getDatabase(); // // // const
@@ -277,4 +277,4 @@ this.usersRef = reference; // // console.log(adaRef); // const dbref = ref(db);
 // get(child(dbref, "/users")) // .then((snapshot) => { // if
 (snapshot.exists()) { // console.log(snapshot.val.user1); // } else { //
 alert("NO DATA FOUND"); // } // }) // .catch((err) => { //
-console.log(err.message); // }); // },
+console.log(err.message); // }); // }, -->

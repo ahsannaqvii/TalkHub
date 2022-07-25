@@ -1,73 +1,189 @@
-<!-- <template>
-  <div>
-    <v-sheet class="container">
-      <img src="../../assets/avatar2.jpeg" alt="Avatar" />
-      <p>{{ message.content }}</p>
-      <span class="time-right">{{ message.timestamp }}</span>
-    </v-sheet>
-  </div>
+<template>
+  <section class="feedss">
+    <article class="feed">
+      <section class="feeds-user-avatar">
+        <img src="../../assets/avatar.jpg" alt="User Securiti" width="40" />
+      </section>
+      <section class="feed-content">
+        <section class="feed-user-info">
+          <h4>
+            {{ this.message.user.name }}
+            <span class="time-stamp">{{ message.timestamp }}</span>
+          </h4>
+        </section>
+        <div>
+          <p class="feed-text">
+            {{ message.content }}
+          </p>
+        </div>
+      </section>
+    </article>
+    <!-- The message editing  -->
+  </section>
 </template>
 
 <script>
 export default {
   props: ["message"],
   name: "Single-component",
-  mounted() {
+  created() {
     console.log(this.message);
   },
 };
 </script>
 
-<style scoped>
-body {
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 0 20px;
+<style>
+.feedss {
+  grid-area: main;
+  overflow: auto;
+  /* padding-top: 0.7rem; */
+  /* height: 80; */
+  /* padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem; */
 }
 
-.container {
-  border: 2px solid #dedede;
-  background-color: white;
-  width: 50%;
-  height: 80px;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 10px 0;
+.feed {
+  display: flex;
+  /* padding: 0.5rem; */
+  padding-bottom: 0;
+  margin-left: 1rem;
+  margin-right: 2rem;
 }
-
-.darker {
-  border-color: #ccc;
-  background-color: #ddd;
+.feed-content {
+  text-align: left;
 }
-
-.container::after {
-  content: "";
-  clear: both;
-  display: table;
+.feeds-user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  position: relative;
 }
-
-.container img {
-  float: left;
-  max-width: 60px;
+.feeds-user-avatar img {
   width: 100%;
-  margin-right: 20px;
-  border-radius: 50%;
-  height: 60px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.325rem;
+}
+.feeds-user-avatar span {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 0.1rem solid var(yellow);
+  border-radius: 0.275rem;
+  padding: 0.2rem;
+  box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(yellow);
+  color: var(white);
+  position: absolute;
+  top: 1.5rem;
+  right: -0.3rem;
+}
+.feeds-user-info {
+  display: flex;
+  margin: 1.5rem 0;
+}
+.feed-user-info h4 {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+.feed-user-info h4 .time-stamp {
+  font-size: 0.6rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.feed-user-info h4 .tag {
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  border-radius: 0.2rem;
+  background-color: var(#f8f8f8);
+  color: var(rgba(134, 134, 134, 1));
+  line-height: 2.6;
+  margin-right: 0.5rem;
+}
+.feed-text {
+  font-size: 1rem;
+  text-align: justify;
 }
 
-.container img.right {
-  float: right;
-  margin-left: 20px;
-  margin-right: 0;
+.quoted {
+  border-left: 0.3rem solid rgb(7, 105, 185);
+}
+.quoted h5 {
+  margin-left: 1rem;
+  color: rgb(7, 105, 185);
+  margin-bottom: 0.3rem;
+}
+.codeblock {
+  background-color: #3f0e40;
+  color: var(white);
+  padding: 0.2rem;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  overflow-x: scroll;
 }
 
-.time-right {
-  float: right;
-  color: #aaa;
+.quoted-text {
+  margin-left: 1rem;
 }
 
-.time-left {
-  float: left;
-  color: #999;
+.mention {
+  padding: 0.1rem 0.2rem;
+  color: var(#376cdf);
+  border-radius: 0.2rem;
+  background-color: var(#f8f8f8);
 }
-</style> -->
+
+.preparatory-text {
+  display: flex;
+  align-items: center;
+  font-weight: 300;
+  margin-bottom: 0.2rem;
+}
+.preparatory-text i {
+  margin-left: 0.3rem;
+  color: var(--dark-grey);
+}
+
+.file-figure {
+  border: 0.1rem solid var(white);
+  padding: 0.8rem 20rem 0.8rem 0.8rem;
+  border-radius: 0.375rem;
+  display: flex;
+  /* width: 34.5rem; */
+}
+.file-figure i {
+  color: var(green);
+  margin-right: 2rem;
+}
+.file-detail {
+  display: flex;
+  flex-direction: column;
+}
+.file-detail h5 {
+  font-weight: bold;
+  margin-bottom: 0.1rem;
+}
+.file-detail small {
+  font-weight: 300;
+  font-size: 0.8rem;
+}
+
+.message-info {
+  display: flex;
+  align-items: center;
+}
+.message-info .zenith-org {
+  margin-right: 0.5rem;
+}
+.message-info small {
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+.message-info strong {
+  font-weight: bold;
+}
+</style>
