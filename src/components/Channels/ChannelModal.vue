@@ -1,84 +1,4 @@
 <template>
-  <!-- <v-row justify="center" style="margin-top: 15px; margin-left: 25px">
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="#4a154b"
-          dark
-          v-bind="attrs"
-          v-on="on"
-          class="add__newBtn"
-        >
-          Add New Channel
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">User Profile</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal first name*"
-                  required
-                  v-model="this.getCurrentUser.displayName"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal middle name"
-                  hint="Your middle name"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal last name"
-                  persistent-hint
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Email*"
-                  required
-                  v-model="email"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Channel Name*"
-                  required
-                  v-model="newChannel"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          ----------------------------------------------------------------------------------------------
-
-          <div>
-            <div class="error-ui-message" v-if="hasErrors">
-              <p v-for="error in errors" :key="error.id">{{ error }}</p>
-            </div>
-            <div>
-              <v-btn color="blue darken-1" text @click="dialog = false">
-                Close
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="verifyEmail">
-                Save
-              </v-btn>
-            </div>
-          </div>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row> -->
-
   <section class="body">
     <section class="content">
       <section class="content-header">
@@ -178,11 +98,16 @@ export default {
 
   methods: {
     ...mapGetters(["currentUser"]),
-    ...mapActions(["setChannelinDatabase", "setCurrentChannel"]),
 
+    //SetCurrentChannel is responsible for setting the current active channel of user
+    //SetChannelInDatabase sets the user entry in DB.JSON File
+    ...mapActions(["setChannelInDatabase", "setCurrentChannel"]),
+
+    //Function designed to cater the UI Needs. If checkChannel returns false , it means that it is
+    // already a part of  channel and 'LEAVE' button will be displayed
     checkChannel(channel) {
       for (var i = 0; i < this.userChannels.length; i++) {
-        if (channel.Name === this.userChannels[i].channelName) {
+        if (channel.Name === this.userChannels[i].name) {
           return false;
         } else {
           continue;
@@ -191,27 +116,26 @@ export default {
 
       return true;
     },
+    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json and
+    //vueX store(currentChannel)
+
     addChannel(channel) {
-      console.log(channel.Name);
       let newChannelObj = {
-        channelName: channel.Name,
-        users: [
-          {
-            userName: this.getCurrentUser.displayName,
-            email: this.getCurrentUser.email,
-          },
-        ],
+        name: channel.Name, //Channel Name
+        users: {
+          userName: this.getCurrentUser.displayName, //User Name
+          email: this.getCurrentUser.email,
+        },
       };
-      this.$store.dispatch("setChannelinDatabase", newChannelObj);
+      this.$store.dispatch("setChannelInDatabase", newChannelObj);
       this.$store.dispatch("setCurrentChannel", channel.Name);
     },
   },
-
+  //Store the existing Channels(Hardcoded channels ) once the component is created.
   async created() {
     try {
-      const res1 = await axios.get("http://localhost:3001/ExistingChannels"); // used in VERIFYCHANNEL()
+      const res1 = await axios.get("http://localhost:3001/ExistingChannels");
       this.existingChannel = res1.data;
-      console.log(this.existingChannel);
     } catch (e) {
       console.log(e.message);
     }
@@ -221,9 +145,6 @@ export default {
     getCurrentUser() {
       return this.$store.getters.currentUser;
     },
-    // hasErrors() {
-    //   return this.errors.length > 0;
-    // },
   },
 };
 </script>
@@ -361,65 +282,3 @@ button:hover {
   margin-right: 4px;
 }
 </style>
-<!-- // verifyChannel() {
-    //   this.errors = [];
-    //   var decision = false;
-    //   console.log(this.newChannel);
-    //   for (var i = 0; i < this.existingChannelNames.length; i++) {
-    //     if (this.newChannel === this.existingChannelNames[i].Name) {
-    //       let obj = {
-    //         channelName: this.newChannel,
-    //         users: {
-    //           userName: this.getCurrentUser.displayName,
-    //           email: this.getCurrentUser.email,
-    //         },
-    //       };
-    //       this.$store.dispatch("setChannelinDatabase", obj);
-    //       this.$store.dispatch("setCurrentChannel", this.newChannel);
-    //       decision = true;
-    //       this.dialog = false;
-    //       break;
-    //     }
-    //   }
-    //   if (!decision) {
-    //     this.errors = [];
-    //     this.errors.push("No Such Channel exist!");
-    //     this.dialog = true;
-    //   }
-    // },
-
-    // checkChannelDuplicacy() {
-    //   let decision = false;
-    //   this.errors = [];
-    //   const data = this.userChannels;
-    //   for (var i = 0; i < this.userChannels.length; i++) {
-    //     console.log(data[i].channelName);
-    //     if (this.newChannel === data[i].channelName) {
-    //       this.errors.push(MESSAGE_CHANNELDUPLICATE);
-    //       decision = true;
-    //       break;
-    //     } else {
-    //       decision = false;
-    //     }
-    //   }
-    //   return decision;
-    // },
-
-    // verifyEmail() {
-    //   if (this.getCurrentUser.email != this.email) {
-    //     this.errors.push(MESSAGE_INCORRECTEMAIL);
-    //     this.dialog = true;
-    //   } else {
-    //     this.errors = [];
-    //     console.log("working2 ?");
-    //     if (!this.checkChannelDuplicacy()) {
-    //       this.verifyChannel();
-    //     } else {
-    //       this.errors.push(MESSAGE_CHANNELDUPLICATE);
-    //       this.dialog = true;
-    //     }
-    //   }
-    // }, -->
-<!-- // const MESSAGE_INCORRECTEMAIL = "The email that has been entered is incorrect";
-// const MESSAGE_CHANNELDUPLICATE =
-//   "The channel is already registered with your email!"; -->

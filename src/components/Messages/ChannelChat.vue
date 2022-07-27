@@ -4,7 +4,7 @@
       <section class="content-header">
         <article class="channel-content-header-details">
           <h4 style="font-weight: bold" class="channel-content-header-name">
-            #{{ currentChannel.channelName.toUpperCase() }}
+            #{{ currentChannel.name.toUpperCase() }}
             <i class="fas fa-star"></i>
           </h4>
           <section class="content-header-icons">
@@ -30,8 +30,8 @@
           :key="message.id"
         />
       </div>
-
-      <section class="message-box">
+      <MessageBox />
+      <!-- <section class="message-box">
         <v-text-field
           background-color="grey"
           dense
@@ -43,7 +43,7 @@
           placeholder="Enter your message"
           v-model.trim="message"
         />
-        <!-- ENTER THE MSG BOX (TEMPORARY FOR NOW ) -->
+        ENTER THE MSG BOX (TEMPORARY FOR NOW )
         <div class="message-box">
           <button @click="sendMessage">Enter</button>
           <button>
@@ -53,62 +53,34 @@
             Upload Attachments
           </button>
         </div>
-      </section>
+      </section> -->
     </section>
   </section>
 </template>
 <script>
-import { ref, getDatabase, set, onValue } from "firebase/database";
+import { ref, getDatabase, onValue } from "firebase/database";
 
 import { mapGetters } from "vuex";
 import SingleMessage from "./Single-Message.vue";
+import MessageBox from "./MessageBox.vue";
 export default {
+  name: "channel-chat",
   data() {
     return {
-      message: "",
       channel: null,
       messages: [],
     };
   },
   watch: {
     currentChannel() {
-      // console.log("WORKING?");
       this.messages = [];
-      this.ListenerFunc();
+      this.getMessageDataFirebase();
       this.channel = this.currentChannel;
     },
   },
   methods: {
-    sendMessage() {
-      const date = new Date();
-      const myDate = date.toLocaleTimeString([], {
-        hourCycle: "h23",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      const db = getDatabase();
-      if (this.currentChannel !== "") {
-        if (this.message.length > 0) {
-          let messageID = (Math.random() + 1).toString(36).substring(7);
-          console.log("random", messageID);
-          set(ref(db, "Messages/" + this.currentChannel.id + "/" + messageID), {
-            content: this.message,
-            timestamp: myDate,
-            user: {
-              id: this.currentUser.uid,
-              email: this.currentUser.email,
-              name: this.currentUser.displayName,
-              avatar: this.currentUser.photoURL,
-            },
-          });
-        }
-      }
-
-      this.message = "";
-    },
     // //------------------------------------------------------------------------------
-    ListenerFunc() {
-      // console.log("LISTENER FUNCTION");
+    getMessageDataFirebase() {
       const db = getDatabase();
       const MessagesRef = ref(db, "Messages/" + this.currentChannel.id);
       this.messages = [];
@@ -116,11 +88,10 @@ export default {
         MessagesRef,
         (snapshot) => {
           snapshot.forEach((childSnapshot) => {
-            // const childKey = childSnapshot.key;
             const childData = childSnapshot.val();
-            console.log(childData);
+            // console.log(childData);
             this.messages.push(childData);
-            console.log(this.messages);
+            // console.log(this.messages);
           });
         },
         {
@@ -131,8 +102,10 @@ export default {
     // detachListener() {},
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
-  name: "ChannelChat",
-  components: { SingleMessage },
+  created() {
+    this.getMessageDataFirebase();
+  },
+  components: { SingleMessage, MessageBox },
 };
 </script>
 <style>
@@ -152,7 +125,7 @@ body {
   display: grid;
 }
 .content {
-  height: 100vh;
+  height: 98vh;
   border-right: 0.1rem solid var(white);
   display: grid;
   grid-template-columns: 1fr;

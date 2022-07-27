@@ -5,20 +5,23 @@ Vue.use(Vuex)
 const state ={
     currentUser:null,
     currentChannel:{
-        "channelName": "Whereabouts",
+        "name": "Whereabouts",
         "id": 2
     },
     userChannels:[],
  }
 
 const getters={
-    currentUser:(state) =>state.currentUser ,
-    userChannels:(state)=>state.userChannels ,
-    currentChannel:(state)=>state.currentChannel
+    currentUser:(state) =>state.currentUser,
+    userChannels:(state)=>state.userChannels,
+    currentChannel:(state)=>state.currentChannel,
+        // DirectMessage:(state)=>state.userChannels.filter((channel)=>channel.private),
+    publicChannels:(state)=>state.userChannels.filter((channel)=>!channel.isDirect)
 }
 
 const actions  = {
     setUser(context,user){
+        // console.log(state)
         context.commit('SET_USER',user)
     },
     
@@ -29,6 +32,7 @@ const actions  = {
         const response = await axios.get('http://localhost:3001/channels')
         const data=response.data
         console.log(data)
+        
 
         this.tempArr=[]
         // TODO:FIND AN EASIER WAY TO DO THIS 
@@ -36,12 +40,13 @@ const actions  = {
             const len=data[i].users.length
             for(var j=0;j<len;j++){
                 if(data[i].users[j].email===state.currentUser.email){
-                    if(tempArr.indexOf(data[i].channelName) ===-1){  //value not found
-                        tempArr.push(data[i].channelName)
+                    if(tempArr.indexOf(data[i].name) ===-1){  //value not found
+                        tempArr.push(data[i].name)
                         console.log(tempArr)
+                        
                             context.commit('SET_USER_CHANNELS', {
-                                channelName:data[i].channelName,id:data[i].id
-                            } )
+                                ...data[i]
+                            })
                     }       
                 }
                 else{
@@ -51,34 +56,40 @@ const actions  = {
         }
         
     },
-    async setChannelinDatabase(context,obj){
+    async setChannelInDatabase(context,obj){
+        console.log(obj)
         const {users}=obj
         console.log(users)
         //returns a new array with common Channel
-        const response=await axios.get(`http://localhost:3001/channels?q=${obj.channelName}`)
-        if(response.data.length===0){
-            console.log('IF WORKING')
-            // TODO:FEELS LIKE THIS WORK IS REPETIVE , NEED TO SOLVE THIS. 
-
-      
-            const res=await axios.post('http://localhost:3001/channels',obj)
-            context.commit('ADD_NEW_CHANNEL',res.data)
-
-
-        }
-        else{
-            console.log('ELSE WORKING')
-
-            const newLength=response.data[0].users.push(users)
-            console.log(newLength)
-            const data=response.data[0] //OBJECT.
-            try{    
-            const res=await axios.put(`http://localhost:3001/channels/${response.data[0].id}`,data)
-            context.commit('ADD_NEW_CHANNEL',res.data)
-            }catch(e){
-                console.log(e.message)
+            const response=await axios.get(`http://localhost:3001/channels?q=${obj.name}`)
+            if(!response.data.length){
+    
+                //If the user object exists , we will convert that to arr 
+                if(obj.users && !Array.isArray(obj.users)) obj.users=[obj.users]
+    
+                const res=await axios.post('http://localhost:3001/channels',obj)
+                context.commit('ADD_NEW_CHANNEL',res.data)
             }
-        } 
+            else{
+                if(!obj.isDirect){
+                    console.log('ELSE WORKING')
+                    const newLength=response.data[0].users.push(users)
+                    console.log(newLength)
+                    // const data=response.data[0] //OBJECT.
+                    console.log(response.data[0])
+                    try{    
+                    const res=await axios.put(`http://localhost:3001/channels/${response.data[0].id}`,response.data[0])
+                    context.commit('ADD_NEW_CHANNEL',res.data)
+                    }catch(e){
+                        console.log(e.message)
+                    }
+                }
+                else{
+                    context.commit('ADD_NEW_CHANNEL',obj)
+
+                }
+               
+            } 
         
         
     },
@@ -87,9 +98,7 @@ const actions  = {
         context.commit('SET_CURRENT_CHANNEL',currChannel)
     }
 }
-
 const mutations ={
-
     SET_USER(state,user){
         state.currentUser=user
     },
@@ -98,8 +107,7 @@ const mutations ={
         
     },
     ADD_NEW_CHANNEL:function(state,channel){
-        const {channelName,id}=channel
-        state.userChannels.push({name:channelName,id:id})
+        state.userChannels.push(channel)
         
     },
     SET_CURRENT_CHANNEL:function(state,CurrChannel){

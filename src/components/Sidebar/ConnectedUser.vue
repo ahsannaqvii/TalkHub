@@ -1,10 +1,12 @@
+<!-- COMPONENT IS RESPONSIBLE FOR SHOWING THE USER INFORMATION ON SIDEBAR TOP  -->
+
 <template>
   <section class="sidebar-user">
     <div class="sidebar-user-info">
-      <h4>{{ this.currentUser1.displayName.toUpperCase() }}</h4>
+      <h4>{{ this.currentUser.displayName.toUpperCase() }}</h4>
       <div>
         <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
-        <v-icon style="color: white; height: 20px">mdi-arrow-down</v-icon>
+        <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
         <!-- TODO:Time bacha to add an online / offline tag below the username  -->
       </div>
     </div>
@@ -17,28 +19,21 @@
 
 <script>
 import { mapGetters } from "vuex";
-// import Channels from "./ChannelModal.vue";
 export default {
   data() {
     return {};
   },
   methods: {
-    ...mapGetters(["currentUser"]),
+    // Get the current logged in user Details
   },
   computed: {
-    currentUser1() {
-      return this.$store.getters.currentUser;
-    },
+    ...mapGetters(["currentUser"]),
   },
   name: "ConnectedUser",
 };
 </script>
 
 <style>
-.sidebar-2 {
-  grid-column: 2 / -1;
-  overflow: auto;
-}
 .sidebar-user {
   color: white;
   position: relative;
@@ -56,7 +51,8 @@ export default {
 .sidebar-user-info i {
   font-size: 0.5rem;
 }
-.sidebar-user-info-additional {
+
+/* .sidebar-user-info-additional {
   display: flex;
   align-items: center;
   margin-left: 0.5rem;
@@ -68,7 +64,7 @@ export default {
   color: green;
   font-size: 0.5rem;
   padding-right: 0.3rem;
-}
+} */
 .user-edit-icon {
   position: absolute;
   top: 0;
@@ -86,5 +82,4 @@ export default {
   color: white;
   height: 2px;
 }
-
 </style>

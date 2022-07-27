@@ -82,20 +82,6 @@
                         color="teal accent-3"
                         v-model.trim="confirm_password"
                       />
-                      <v-file-input
-                        v-model="files"
-                        placeholder="Upload your documents"
-                        label="File input"
-                        multiple
-                        prepend-icon="mdi-paperclip"
-                        @change="checkFileURL"
-                      >
-                        <template v-slot:selection="{ text }">
-                          <v-chip small label color="primary">
-                            {{ text }}
-                          </v-chip>
-                        </template>
-                      </v-file-input>
                     </v-form>
                   </v-card-text>
                   <div class="error-ui-message" v-if="hasErrors">
@@ -132,8 +118,6 @@ import {
 } from "firebase/auth";
 // import {  onAuthStateChanged } from "firebase/auth";
 
-// onValue
-// child get
 import { mapActions } from "vuex";
 import { ref, getDatabase, set } from "firebase/database";
 
@@ -162,12 +146,12 @@ export default {
 
           updateProfile(user, {
             displayName: this.name,
-            photoURL: this.files[0].name,
+            // photoURL: this.files[0].name,
           }).then(
             () => {
               this.saveUsersToUserRef(user, db).then(() => {
                 this.setUser(user);
-                this.files = [];
+                // this.files = [];
                 this.$router.push("/");
               });
             },
@@ -185,7 +169,8 @@ export default {
     saveUsersToUserRef(user, db) {
       return set(ref(db, "Users/" + user.uid), {
         name: user.displayName,
-        avatar: this.files[0].name,
+        // avatar: this.files[0].name,
+        id: user.uid,
         email: user.email,
       });
     },
@@ -211,9 +196,9 @@ export default {
       }
       return false;
     },
-    checkFileURL() {
-      console.log(this.files);
-    },
+    // checkFileURL() {
+    //   console.log(this.files);
+    // },
     isFormValid() {
       if (this.isEmpty()) {
         this.errors.push("Empty fields not allowed!");
@@ -235,7 +220,7 @@ export default {
     step: 1,
     name: "",
     password: "",
-    files: [],
+    // files: [],
     confirm_password: "",
     email: "",
   }),

@@ -5,18 +5,17 @@
         <div class="box-1"></div>
         <div class="box-2"></div>
         <button class="box-3" @click="setModalActive()">+</button>
-        <!-- <ChannelModal v-show="showModal" /> -->
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
         <ConnectedUser />
         <section class="unread">
-          <h4 class="unread-header">
+          <h5 class="unread-header">
             <span class="unread-icons">
               <v-icon style="color: white">mdi-message-fast-outline</v-icon>
             </span>
             All unread
-          </h4>
+          </h5>
           <ul>
             <li>
               <v-icon style="color: white">mdi-dots-horizontal</v-icon>
@@ -33,14 +32,19 @@
             </li>
           </ul>
         </section>
-        <ChannelsInfo
-          Name="CHANNELS"
-          :userChannels="userChannels"
+
+        <!-- //THIS IS FOR THE SHOWING THE LIST OF CHANNELS IN THE SIDEBAR  -->
+        <ChannelsList
+          :type="CHANNEL_TYPE.CHANNEL"
+          name="Channels"
+          :generalizedData="userChannels"
           :showForm="showForm"
           v-on:changeMode="changeScreen($event)"
         />
-        <ChannelsInfo
-          Name="DIRECT MESSAGES"
+        <ChannelsList
+          :type="CHANNEL_TYPE.DIRECT_MESSAGE"
+          name="Direct Messages"
+          :generalizedData="userData"
           :showForm="showForm"
           v-on:changeMode="changeScreen($event)"
         />
@@ -53,42 +57,70 @@
 
 <script>
 import ConnectedUser from "./ConnectedUser.vue";
-import ChannelsInfo from "../Channels/ChannelsInfo.vue";
+import ChannelsList from "../Channels/ChannelsList.vue";
 import ChannelChat from "../Messages/ChannelChat.vue";
-
-import { mapActions } from "vuex";
+import constants from "@/services/constants";
+import { mapActions, mapGetters } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
+import { ref, getDatabase, onValue } from "firebase/database";
 
 export default {
-  watch: {},
   data() {
     return {
+      userData: [],
       clicked: false,
       showForm: "channel-chat",
+      CHANNEL_TYPE: constants.CHANNEL_TYPE,
     };
   },
   name: "Side-bar",
   // mounted() {
   //   this.setDefaultChannel();
   // },
+
   methods: {
     ...mapActions(["fetchChannels"]),
+
     setModalActive() {
       this.showForm = "channel-modal";
     },
     changeScreen(updatedTitle) {
       this.showForm = updatedTitle;
     },
+    getUserDataFirebase() {
+      console.log(this.userData);
+      const db = getDatabase();
+      const UsersRef = ref(db, "Users/");
+      console.log(UsersRef);
+      this.userData = [];
+      onValue(
+        UsersRef,
+        (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            const childData = childSnapshot.val();
+            this.userData.push(childData);
+          });
+        },
+        {
+          onlyOnce: true,
+        }
+      );
+    },
   },
+
   created() {
+    //Called to set the User Channels.
     this.fetchChannels();
+    //Responsible for getting all registered users information from firebase AUTHENTICATION.
+    this.getUserDataFirebase();
   },
   components: {
     ConnectedUser,
-    ChannelsInfo,
+    ChannelsList,
     "channel-chat": ChannelChat,
     "channel-modal": ChannelModal,
   },
+  computed: mapGetters({ userChannels: "publicChannels" }),
 };
 </script>
 
@@ -154,6 +186,10 @@ ul {
   font-size: 1.5rem;
   color: white;
 }
+.sidebar-2 {
+  grid-column: 2 / -1;
+  overflow: hidden;
+}
 
 /* READ / UNREAD MSGS  */
 .unread {
@@ -175,7 +211,7 @@ ul {
   color: white;
   font-size: 12px;
   margin-left: 23px;
-  padding: 2px;
+  padding: 4px;
   font-style: italic;
   display: block;
   text-align: justify;
