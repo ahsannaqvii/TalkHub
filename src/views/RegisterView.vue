@@ -127,12 +127,10 @@ export default {
 
     async registerUser() {
       this.errors = [];
-
       const db = getDatabase();
-
       if (this.isFormValid()) {
         try {
-          console.log("register");
+          // console.log("register");
           const auth = getAuth();
           const credential = await createUserWithEmailAndPassword(
             auth,
@@ -142,26 +140,22 @@ export default {
           const user = credential.user;
 
           console.log(user);
-          //   //Since photoURl and display name is null so we need it to show up in slack.
-
+        // TODO: resolve this into ASYNC AWAIT 
           updateProfile(user, {
             displayName: this.name,
-            // photoURL: this.files[0].name,
           }).then(
+            //REPLACE WITH SIMPLE FUNCTYION (TRY)
             () => {
               this.saveUsersToUserRef(user, db).then(() => {
                 this.setUser(user);
-                // this.files = [];
                 this.$router.push("/");
               });
             },
             (error) => {
-              console.log(error.message);
               this.errors.push(error.message);
             }
           );
         } catch (err) {
-          console.log(err.message);
           this.errors.push(err.message);
         }
       }
@@ -169,11 +163,11 @@ export default {
     saveUsersToUserRef(user, db) {
       return set(ref(db, "Users/" + user.uid), {
         name: user.displayName,
-        // avatar: this.files[0].name,
         id: user.uid,
         email: user.email,
       });
     },
+    // TODO:Set to vuetify 
     isEmpty() {
       if (
         this.password.length == 0 ||
@@ -196,9 +190,7 @@ export default {
       }
       return false;
     },
-    // checkFileURL() {
-    //   console.log(this.files);
-    // },
+
     isFormValid() {
       if (this.isEmpty()) {
         this.errors.push("Empty fields not allowed!");
@@ -220,7 +212,6 @@ export default {
     step: 1,
     name: "",
     password: "",
-    // files: [],
     confirm_password: "",
     email: "",
   }),

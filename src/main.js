@@ -24,10 +24,12 @@ const db=getDatabase(app);
 
 // window.firebase=firebase
 Vue.config.productionTip = false
+
 export{db}
 const auth = getAuth();
-const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {  //CONFUSION.
   // determine if the user is logged in or not and respond accordingly.
+
+const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {  
 
   store.dispatch('setUser',firebaseUser)
   

@@ -42,6 +42,10 @@
         {
           "userName": "Mustafa",
           "email": "ahsan.naqvi@foundri.net"
+        },
+        {
+          "userName": "Ahsan Naqvi",
+          "email": "k191475@nu.edu.pk"
         }
       ],
       "id": 4
@@ -73,6 +77,44 @@
         }
       ],
       "id": 6
+    },
+    {
+      "name": "OXyDjCwCrJemjX1GaKNy0wnxbxE3-OXyDjCwCrJemjX1GaKNy0wnxbxE3",
+      "displayName": "Mustafa",
+      "isDirect": true,
+      "users": [
+        {
+          "userName": "Mustafa",
+          "email": "ahsan.naqvi@foundri.net"
+        }
+      ],
+      "id": 7
+    },
+    {
+      "name": "dMIoT17NwZRaOxP6gHqYyLp0c8W2-OXyDjCwCrJemjX1GaKNy0wnxbxE3",
+      "displayName": "Ahsan Naqvi",
+      "isDirect": true,
+      "users": [
+        {
+          "userName": "Mustafa",
+          "email": "ahsan.naqvi@foundri.net"
+        },
+        {
+          "userName": "Ahsan Naqvi",
+          "email": "k191475@nu.edu.pk"
+        }
+      ],
+      "id": 8
+    },
+    {
+      "name": "Frontend Dev Team",
+      "users": [
+        {
+          "userName": "Mustafa",
+          "email": "ahsan.naqvi@foundri.net"
+        }
+      ],
+      "id": 9
     }
   ],
   "ExistingChannels": [

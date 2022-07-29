@@ -26,9 +26,9 @@
 export default {
   props: ["message"],
   name: "Single-component",
-  created() {
-    console.log(this.message);
-  },
+  // created() {
+  //   console.log(this.message);
+  // },
 };
 </script>
 

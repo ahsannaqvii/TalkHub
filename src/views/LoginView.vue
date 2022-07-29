@@ -30,6 +30,7 @@
                     <h4 class="text-center mt-4">
                       Ensure your email for registration
                     </h4>
+                    <!-- TODO:Apply rules and value props  -->
                     <v-form>
                       <v-text-field
                         label="Email"
@@ -39,7 +40,7 @@
                         v-model.trim="email"
                         color="teal accent-3"
                       />
-
+                      <!-- APPLY RULES  -->
                       <v-text-field
                         id="password"
                         label="Password"
@@ -101,27 +102,30 @@ export default {
     ...mapActions(["setUser", "fetchChannels"]),
     async login() {
       this.errors = [];
+      if (!this.isFormValid) return;
 
-      if (this.isFormValid) {
-        try {
-          const auth = getAuth();
-          const user = await signInWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
-          console.log("login : ", user);
-          this.setUser(user);
-          // user
-          this.fetchChannels(user);
-          this.$router.push("/");
-        } catch (err) {
-          console.log(err.message);
-          this.errors.push(err.message);
-        }
+      try {
+        const auth = getAuth();
+        const user = await signInWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
+        this.setUser(user);
+
+        //
+        this.fetchChannels(user);
+        //try sending with object.
+        this.$router.push("/");
+
+      } catch (err) {
+        console.log(err.message);
+        // TODO:TRY ERROR 
+        this.errors.push(err.message);
       }
     },
     isFormValid() {
+      //if(this.email && this.password){} ---- same work.
       if (this.email.length > 0 && this.password.length > 0) {
         return true;
       }

@@ -113,7 +113,7 @@ export default {
 .search-bar-input {
   width: 31.25rem;
   height: 1.5rem;
-  border: 0.1rem solid var(--slack-border-color);
+  border: 0.1rem solid #ccc;
   border-radius: 5px;
   background-color: rgb(67, 30, 68);
   padding-left: calc(30rem - 23rem);
@@ -122,8 +122,8 @@ export default {
   transition: all 0.5s ease-out;
 }
 .search-bar-input:focus {
-  background-color: var(--slack-background);
-  color: var(white);
+  background-color: #2f2f30;
+  color: white;
 }
 .search-bar-input::placeholder {
   color: var(white);

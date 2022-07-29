@@ -43,6 +43,9 @@ import { ref, getDatabase, set } from "firebase/database";
 import { mapGetters } from "vuex";
 
 export default {
+  props: {
+    messages: Array,
+  },
   data() {
     return {
       message: "",
@@ -50,7 +53,8 @@ export default {
   },
   methods: {
     sendMessage() {
-      console.log("hello");
+      // console.log("hello");
+      // console.log(this.messages);
       //Destructing Object to get Ids, ermail and display Name
       const {
         uid: currentUserId,

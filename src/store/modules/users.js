@@ -28,7 +28,6 @@ const actions  = {
     async fetchChannels(context){
         // TODO:USE THESE  ALL CONDITIONS IN COMPONENTS , DOESNT LOOOK FUNCTIONAL IN VUEX STORE 
         const tempArr=[]
-        console.log('work1')
         const response = await axios.get('http://localhost:3001/channels')
         const data=response.data
         console.log(data)
@@ -54,7 +53,6 @@ const actions  = {
                 }
             }
         }
-        
     },
     async setChannelInDatabase(context,obj){
         console.log(obj)
@@ -63,7 +61,6 @@ const actions  = {
         //returns a new array with common Channel
             const response=await axios.get(`http://localhost:3001/channels?q=${obj.name}`)
             if(!response.data.length){
-    
                 //If the user object exists , we will convert that to arr 
                 if(obj.users && !Array.isArray(obj.users)) obj.users=[obj.users]
     
@@ -72,7 +69,7 @@ const actions  = {
             }
             else{
                 if(!obj.isDirect){
-                    console.log('ELSE WORKING')
+                    // console.log('ELSE WORKING')
                     const newLength=response.data[0].users.push(users)
                     console.log(newLength)
                     // const data=response.data[0] //OBJECT.

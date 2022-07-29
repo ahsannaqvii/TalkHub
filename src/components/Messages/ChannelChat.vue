@@ -30,7 +30,7 @@
           :key="message.id"
         />
       </div>
-      <MessageBox />
+      <MessageBox :messages="messages" />
       <!-- <section class="message-box">
         <v-text-field
           background-color="grey"
@@ -89,7 +89,7 @@ export default {
         (snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
-            // console.log(childData);
+            // console.log(childData); 
             this.messages.push(childData);
             // console.log(this.messages);
           });
@@ -102,7 +102,7 @@ export default {
     // detachListener() {},
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
-  created() {
+  mounted() {
     this.getMessageDataFirebase();
   },
   components: { SingleMessage, MessageBox },

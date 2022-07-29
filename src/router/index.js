@@ -24,12 +24,10 @@ const routes = [
         next()
       }
     }
-     
-    
   },
   {
     path: '/login',
-    name: 'LoginView',
+    name: 'LoginView', 
     component: LoginView
   },
   {

@@ -116,9 +116,9 @@ export default {
 
       return true;
     },
-    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json and
-    //vueX store(currentChannel)
-
+    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json 
+    // and in vueX store(currentChannel)
+    
     addChannel(channel) {
       let newChannelObj = {
         name: channel.Name, //Channel Name
