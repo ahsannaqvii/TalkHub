@@ -6,7 +6,7 @@
           <v-col cols="12" sm="8" md="8">
             <v-card class="elevation-12">
               <v-row class="fill-height">
-                <v-col cols="12" md="4" class="teal accent-3">
+                <v-col cols="12" md="4" class="left-sidebar-register">
                   <v-card-text class="white--text mt-12">
                     <h1 class="text-center display-1">Welcome Back!</h1>
                     <h5 class="text-center">
@@ -20,7 +20,10 @@
                 </v-col>
                 <v-col cols="12" md="8">
                   <v-card-text class="mt-12">
-                    <h1 class="text-center display-2 teal--text text--accent-3">
+                    <h1
+                      style="color: #350d36"
+                      class="text-center display-2 text--accent-3"
+                    >
                       Create Account
                     </h1>
                     <div class="text-center mt-4">
@@ -88,11 +91,7 @@
                     <p v-for="error in errors" :key="error.id">{{ error }}</p>
                   </div>
                   <div class="text-center mt-n5">
-                    <v-btn
-                      rounded
-                      color="teal accent-3"
-                      dark
-                      @click="registerUser"
+                    <v-btn rounded color="#350d36" dark @click="registerUser"
                       >SIGN UP</v-btn
                     >
                   </div>
@@ -140,7 +139,7 @@ export default {
           const user = credential.user;
 
           console.log(user);
-        // TODO: resolve this into ASYNC AWAIT 
+          // TODO: resolve this into ASYNC AWAIT
           updateProfile(user, {
             displayName: this.name,
           }).then(
@@ -167,7 +166,7 @@ export default {
         email: user.email,
       });
     },
-    // TODO:Set to vuetify 
+    // TODO:Set to vuetify
     isEmpty() {
       if (
         this.password.length == 0 ||
@@ -242,15 +241,7 @@ export default {
 p {
   text-align: center;
 }
+.left-sidebar-register {
+  background-color: #350d36;
+}
 </style>
-<!-- // // // signOut(auth).then(() => { // // Sign-out successful. //
-}).catch((error) => { // // An error happened. // }); // tempFunction() { //
-console.log("WOKRING"); // // var usersRef1 = getDatabase.ref("users"); // //
-console.log("LOVE" + usersRef1); // const db = getDatabase(); // // // const
-ref=db.ref('/users') // // const reference = ref(db, "/users"); // //
-console.log(reference); // // var adaRef = reference.parent("user1"); // // //
-this.usersRef = reference; // // console.log(adaRef); // const dbref = ref(db);
-// get(child(dbref, "/users")) // .then((snapshot) => { // if
-(snapshot.exists()) { // console.log(snapshot.val.user1); // } else { //
-alert("NO DATA FOUND"); // } // }) // .catch((err) => { //
-console.log(err.message); // }); // }, -->

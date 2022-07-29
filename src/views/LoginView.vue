@@ -120,7 +120,7 @@ export default {
 
       } catch (err) {
         console.log(err.message);
-        // TODO:TRY ERROR 
+        // TODO:TRY console.error()
         this.errors.push(err.message);
       }
     },
