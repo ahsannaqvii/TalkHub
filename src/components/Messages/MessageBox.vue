@@ -53,8 +53,6 @@ export default {
   },
   methods: {
     sendMessage() {
-      // console.log("hello");
-      // console.log(this.messages);
       //Destructing Object to get Ids, ermail and display Name
       const {
         uid: currentUserId,

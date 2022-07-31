@@ -2,11 +2,16 @@
   <section class="feedss">
     <article class="feed">
       <section class="feeds-user-avatar">
-        <img src="../../assets/avatar.jpg" alt="User Securiti" width="40" />
+        <avatar
+          :fullname="this.message.user.name"
+          radius="15"
+          size="30"
+          color="#2eb67d"
+        ></avatar>
       </section>
       <section class="feed-content">
         <section class="feed-user-info">
-          <h4>
+          <h4 class="feed-user-name" @click="showDetails()">
             {{ this.message.user.name }}
             <span class="time-stamp">{{ message.timestamp }}</span>
           </h4>
@@ -23,12 +28,20 @@
 </template>
 
 <script>
+import Avatar from "vue-avatar-component";
+
 export default {
+  methods: {
+    showDetails() {
+      const { user } = this.message;
+      this.$emit("showDetails", user);
+    },
+  },
   props: ["message"],
+
   name: "Single-component",
-  // created() {
-  //   console.log(this.message);
-  // },
+
+  components: { Avatar },
 };
 </script>
 
@@ -36,14 +49,11 @@ export default {
 .feedss {
   grid-area: main;
   overflow: auto;
-  /* padding-top: 0.7rem; */
-  /* height: 80; */
-  /* padding: 0.9375rem 0.3125rem 0.625rem 0.3125rem; */
 }
 
 .feed {
   display: flex;
-  /* padding: 0.5rem; */
+  padding: 0.5rem;
   padding-bottom: 0;
   margin-left: 1rem;
   margin-right: 2rem;
@@ -88,7 +98,9 @@ export default {
   font-size: 1rem;
   margin-right: 0.5rem;
   font-weight: bold;
+  cursor: pointer;
 }
+
 .feed-user-info h4 .time-stamp {
   font-size: 0.6rem;
   font-weight: 400;

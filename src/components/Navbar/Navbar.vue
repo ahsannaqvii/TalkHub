@@ -122,7 +122,7 @@ export default {
   transition: all 0.5s ease-out;
 }
 .search-bar-input:focus {
-  background-color: #2f2f30;
+  background-color: white;
   color: white;
 }
 .search-bar-input::placeholder {

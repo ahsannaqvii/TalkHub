@@ -6,8 +6,6 @@
 
 <style>
 #app {
-  overflow: hidden;
-  overflow-y: hidden;
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

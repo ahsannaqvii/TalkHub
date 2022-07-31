@@ -15,7 +15,6 @@ const getters={
     currentUser:(state) =>state.currentUser,
     userChannels:(state)=>state.userChannels,
     currentChannel:(state)=>state.currentChannel,
-        // DirectMessage:(state)=>state.userChannels.filter((channel)=>channel.private),
     publicChannels:(state)=>state.userChannels.filter((channel)=>!channel.isDirect)
 }
 
@@ -30,7 +29,7 @@ const actions  = {
         const tempArr=[]
         const response = await axios.get('http://localhost:3001/channels')
         const data=response.data
-        console.log(data)
+        // console.log(data)
         
 
         this.tempArr=[]
@@ -41,7 +40,7 @@ const actions  = {
                 if(data[i].users[j].email===state.currentUser.email){
                     if(tempArr.indexOf(data[i].name) ===-1){  //value not found
                         tempArr.push(data[i].name)
-                        console.log(tempArr)
+                        // console.log(tempArr)
                         
                             context.commit('SET_USER_CHANNELS', {
                                 ...data[i]
@@ -55,9 +54,9 @@ const actions  = {
         }
     },
     async setChannelInDatabase(context,obj){
-        console.log(obj)
+        // console.log(obj)
         const {users}=obj
-        console.log(users)
+        // console.log(users)
         //returns a new array with common Channel
             const response=await axios.get(`http://localhost:3001/channels?q=${obj.name}`)
             if(!response.data.length){
@@ -73,7 +72,7 @@ const actions  = {
                     const newLength=response.data[0].users.push(users)
                     console.log(newLength)
                     // const data=response.data[0] //OBJECT.
-                    console.log(response.data[0])
+                    // console.log(response.data[0])
                     try{    
                     const res=await axios.put(`http://localhost:3001/channels/${response.data[0].id}`,response.data[0])
                     context.commit('ADD_NEW_CHANNEL',res.data)
@@ -91,7 +90,7 @@ const actions  = {
         
     },
     setCurrentChannel(context,currChannel){
-        console.log("USER'S CURRENT CHANNEL IN USERS.JS" , currChannel)
+        // console.log("USER'S CURRENT CHANNEL IN USERS.JS" , currChannel)
         context.commit('SET_CURRENT_CHANNEL',currChannel)
     }
 }

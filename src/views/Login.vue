@@ -20,7 +20,6 @@
                       </v-btn>
 
                       <v-btn class="mx-2" fab color="black" outlined>
-                        <!-- style="background-color: #ecb22e" -->
                         <v-icon>fab fa-google-plus-g</v-icon>
                       </v-btn>
                       <v-btn class="mx-2" fab color="black" outlined>
@@ -30,23 +29,23 @@
                     <h4 class="text-center mt-4">
                       Ensure your email for registration
                     </h4>
-                    <!-- TODO:Apply rules and value props  -->
-                    <v-form>
+                    <v-form ref="form">
                       <v-text-field
                         label="Email"
                         name="Email"
                         prepend-icon="email"
                         type="text"
                         v-model.trim="email"
+                        :rules="[rules.required, rules.email]"
                         color="teal accent-3"
                       />
-                      <!-- APPLY RULES  -->
                       <v-text-field
                         id="password"
                         label="Password"
                         name="password"
                         prepend-icon="lock"
                         type="password"
+                        :rules="[rules.required, rules.passwordLength]"
                         v-model.trim="password"
                         color="teal accent-3"
                       />
@@ -95,14 +94,27 @@
 
 <script>
 import { mapActions } from "vuex";
+import rules from "@/services/rules/rules";
 
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 export default {
+  name: "LoginView",
+  data: () => ({
+    step: 1,
+    password: "",
+    email: "",
+    rules: rules,
+  }),
+  props: {
+    source: String,
+  },
   methods: {
     ...mapActions(["setUser", "fetchChannels"]),
     async login() {
       this.errors = [];
-      if (!this.isFormValid) return;
+      console.log(this.$refs.form);
+
+      if (!this.$refs.form.validate()) return;
 
       try {
         const auth = getAuth();
@@ -113,39 +125,12 @@ export default {
         );
         this.setUser(user);
 
-        //
         this.fetchChannels(user);
-        //try sending with object.
         this.$router.push("/");
-
       } catch (err) {
-        console.log(err.message);
-        // TODO:TRY console.error()
-        this.errors.push(err.message);
+        console.error(err.message);
       }
     },
-    isFormValid() {
-      //if(this.email && this.password){} ---- same work.
-      if (this.email.length > 0 && this.password.length > 0) {
-        return true;
-      }
-      return false;
-    },
-  },
-  computed: {
-    hasErrors() {
-      return this.errors.length > 0;
-    },
-  },
-  name: "LoginView",
-  data: () => ({
-    errors: [],
-    step: 1,
-    password: "",
-    email: "",
-  }),
-  props: {
-    source: String,
   },
 };
 </script>

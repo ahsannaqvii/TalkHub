@@ -1,8 +1,8 @@
 import Vue from 'vue'
 
 import VueRouter from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
+import LoginView from '../views/Login.vue'
+import RegisterView from '../views/Register.vue'
 import slack from '../views/Slack.vue'
 // import firebase from 'firebase/compat/app';
 import { getAuth } from 'firebase/auth'

@@ -1,5 +1,5 @@
 <template>
-  <section class="body">
+  <section class="body-content">
     <section class="content">
       <section class="content-header">
         <article class="channel-content-header-details">
@@ -116,9 +116,9 @@ export default {
 
       return true;
     },
-    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json 
+    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json
     // and in vueX store(currentChannel)
-    
+
     addChannel(channel) {
       let newChannelObj = {
         name: channel.Name, //Channel Name
@@ -131,7 +131,7 @@ export default {
       this.$store.dispatch("setCurrentChannel", channel.Name);
     },
   },
-  //Store the existing Channels(Hardcoded channels ) once the component is created.
+  //Store the existing Channels(Hardcoded channels) once the component is created.
   async created() {
     try {
       const res1 = await axios.get("http://localhost:3001/ExistingChannels");
@@ -150,11 +150,11 @@ export default {
 </script>
 
 <style scoped>
-.body {
+.body-content {
+  grid-template-columns: 1.5fr 1fr;
   grid-column: 2 / -1;
-  background-color: var(white);
+  background-color: white;
   border-right: 0.1rem solid rgba(29, 28, 29, 0.13);
-  display: grid;
 }
 .content {
   /* grid-column: 1 / 1;   */

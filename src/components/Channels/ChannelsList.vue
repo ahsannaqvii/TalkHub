@@ -49,13 +49,11 @@ export default {
     },
     ...mapGetters(["currentUser"]),
   },
-  created() {
-    console.log(this.generalizedData);
-  },
+
   methods: {
     ...mapActions(["fetchChannels", "setCurrentChannel"]),
+
     toggleHandler() {
-      console.log(this.toggle);
       this.toggle = !this.toggle;
     },
     changeChannel(channelInfo) {
@@ -122,6 +120,8 @@ export default {
 }
 .sidebar-channels {
   margin-top: 10px;
+  cursor: pointer;
+
   border-top: 0.1rem solid grey;
 }
 .sidebar-channels li {
@@ -131,6 +131,7 @@ export default {
   margin-left: 23px;
   font-style: italic;
   display: block;
+  cursor: pointer;
   text-align: justify;
 }
 .sidebar-channels-header {

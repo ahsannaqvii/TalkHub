@@ -1,23 +1,13 @@
 <template>
-  <section class="body">
+  <!-- <section class="body"> -->
+  <section v-bind:class="[showUserProfile ? 'body' : 'body-full']">
     <section class="content">
       <section class="content-header">
         <article class="channel-content-header-details">
           <h4 style="font-weight: bold" class="channel-content-header-name">
-            #{{ currentChannel.name.toUpperCase() }}
+            #{{ currentChannel.name }}
             <i class="fas fa-star"></i>
           </h4>
-          <section class="content-header-icons">
-            <div>
-              <i class="far fa-user"></i
-              ><span class="content-header-counter">23</span>
-            </div>
-            <div>
-              <i class="fas fa-thumbtack fa-rotate-315 last"></i
-              ><span class="content-header-counter">6</span>
-            </div>
-            <p class="content-header-text">Securiti.ai</p>
-          </section>
         </article>
         <button class="btn-borderless btn-slack info" id="info" type="button">
           <i class="fas fa-info-circle"></i>
@@ -28,47 +18,32 @@
           :message="message"
           v-for="message in messages"
           :key="message.id"
+          v-on:showDetails="showDetails($event)"
         />
       </div>
       <MessageBox :messages="messages" />
-      <!-- <section class="message-box">
-        <v-text-field
-          background-color="grey"
-          dense
-          flat
-          hide-details
-          solo
-          id="message"
-          class="messages"
-          placeholder="Enter your message"
-          v-model.trim="message"
-        />
-        ENTER THE MSG BOX (TEMPORARY FOR NOW )
-        <div class="message-box">
-          <button @click="sendMessage">Enter</button>
-          <button>
-            <v-icon style="color: black; margin-right: 5px"
-              >mdi-auto-upload
-            </v-icon>
-            Upload Attachments
-          </button>
-        </div>
-      </section> -->
     </section>
+    <UserDetails
+      v-if="showUserProfile"
+      :userData="userData"
+      v-on:ToggleSideBar="ToggleSideBar($event)"
+    />
   </section>
 </template>
 <script>
 import { ref, getDatabase, onValue } from "firebase/database";
-
 import { mapGetters } from "vuex";
 import SingleMessage from "./Single-Message.vue";
 import MessageBox from "./MessageBox.vue";
+import UserDetails from "../UserInfo/UserDetails.vue";
 export default {
   name: "channel-chat",
   data() {
     return {
       channel: null,
       messages: [],
+      userData: "",
+      showUserProfile: false,
     };
   },
   watch: {
@@ -79,7 +54,16 @@ export default {
     },
   },
   methods: {
-    // //------------------------------------------------------------------------------
+    //Function responsible to get an event from child and toggle the showUserProfile data variable.
+    showDetails(UserData) {
+      this.userData = UserData;
+      this.showUserProfile = !this.showUserProfile;
+    },
+    ToggleSideBar(decision) {
+      this.showUserProfile = decision;
+    },
+
+    // Get messages from firebase realtime DB.
     getMessageDataFirebase() {
       const db = getDatabase();
       const MessagesRef = ref(db, "Messages/" + this.currentChannel.id);
@@ -89,7 +73,7 @@ export default {
         (snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
-            // console.log(childData); 
+            // console.log(childData);
             this.messages.push(childData);
             // console.log(this.messages);
           });
@@ -99,13 +83,12 @@ export default {
         }
       );
     },
-    // detachListener() {},
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
   mounted() {
     this.getMessageDataFirebase();
   },
-  components: { SingleMessage, MessageBox },
+  components: { SingleMessage, MessageBox, UserDetails },
 };
 </script>
 <style>
@@ -120,13 +103,21 @@ body {
 
 .body {
   grid-column: 2 / -1;
-  background-color: var(white);
+  background-color: white;
   border-right: 0.1rem solid rgba(29, 28, 29, 0.13);
+  grid-template-columns: 1.5fr 1fr;
   display: grid;
 }
+.body-full {
+  grid-template-columns: 1.5fr 1fr;
+  grid-column: 2 / -1;
+  background-color: white;
+  border-right: 0.1rem solid rgba(29, 28, 29, 0.13);
+}
 .content {
+  grid-column: 1 / 1;
   height: 98vh;
-  border-right: 0.1rem solid var(white);
+  border-right: 0.1rem solid white;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr 10rem;
@@ -138,20 +129,19 @@ body {
 
 .content-header {
   border-bottom: 1px solid #ccc;
-  /* padding: 4px; */
-  padding-bottom: 10px;
+  /* padding-bottom: 5px; */
   grid-area: header;
   display: flex;
   align-items: center;
   background-color: #fff;
-  border-bottom: 0.1rem solid var(white);
+  border-bottom: 0.1rem solid #ccc;
   box-shadow: 0 0 0.2rem -0.2rem rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 .channel-content-header-details {
   display: flex;
   flex-direction: column;
-  margin: 1rem 0 0.1rem 1.5rem;
+  margin: 1rem 0 0 1.5rem;
 }
 .content-header-icons {
   display: flex;
@@ -160,17 +150,17 @@ body {
 .channel-content-header-name {
   font-size: 1rem;
   font-style: italic;
-
+  text-transform: uppercase;
   display: flex;
   margin-bottom: 0.5rem;
 }
 
 .channel-content-header-name i {
   font-size: 0.8rem;
-  color: var(dark blue);
+  color: dark blue;
   margin-left: 0.5rem;
-  margin-top: 4px;
-  color: blue;
+  margin-top: 6px;
+  color: #350d36;
 }
 .content-header-icons {
   margin-bottom: 0.4rem;
@@ -207,8 +197,7 @@ body {
   /* bor */
   border: 1px solid grey;
 }
-/* .messages {
-} */
+/* Messages css  */
 .message-box {
   margin-top: 10px;
 }
@@ -222,5 +211,3 @@ body {
   overflow-y: auto;
 }
 </style>
-
-// const timestamp = // console.log(firebase.database.ServerValue.TIMESTAMP);

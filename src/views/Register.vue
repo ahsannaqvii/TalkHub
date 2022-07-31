@@ -41,14 +41,15 @@
                     <h4 class="text-center mt-4">
                       Ensure your email for registration
                     </h4>
-                    <v-form>
+                    <v-form ref="form">
                       <v-text-field
                         label="Name"
                         name="Name"
                         placeholder="Enter your name.."
                         prepend-icon="person"
                         type="text"
-                        required
+                        :rules="[rules.required]"
+                        counter="25"
                         color="teal accent-3"
                         v-model.trim="name"
                       />
@@ -58,7 +59,7 @@
                         prepend-icon="email"
                         placeholder="Enter your email.."
                         type="text"
-                        required
+                        :rules="[rules.required, rules.email]"
                         color="teal accent-3"
                         v-model.trim="email"
                       />
@@ -72,24 +73,22 @@
                         placeholder="Enter your password.."
                         type="password"
                         color="teal accent-3"
+                        :rules="[rules.required, rules.passwordLength]"
                         v-model.trim="password"
                       />
                       <v-text-field
                         id="confirm-password"
                         label="Password"
                         name="password"
-                        required
-                        placeholder="Reenter your password.."
+                        placeholder="Re-enter your password.."
                         prepend-icon="lock"
                         type="password"
                         color="teal accent-3"
                         v-model.trim="confirm_password"
+                        :rules="[rules.required, rules.passwordLength]"
                       />
                     </v-form>
                   </v-card-text>
-                  <div class="error-ui-message" v-if="hasErrors">
-                    <p v-for="error in errors" :key="error.id">{{ error }}</p>
-                  </div>
                   <div class="text-center mt-n5">
                     <v-btn rounded color="#350d36" dark @click="registerUser"
                       >SIGN UP</v-btn
@@ -106,57 +105,62 @@
 </template>
 
 <script>
-// import firebase from "firebase/compat/app";
-// import { db } from "../main.js";
-// @ is an alias to /src
-// import HelloWorld from "@/components/HelloWorld.vue";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-// import {  onAuthStateChanged } from "firebase/auth";
 
 import { mapActions } from "vuex";
 import { ref, getDatabase, set } from "firebase/database";
-
+import rules from "@/services/rules/rules";
 export default {
+
+  props: {
+    source: String,
+  },
+  data: () => ({
+    step: 1,
+    name: "",
+    password: "",
+    confirm_password: "",
+    email: "",
+    rules: rules
+  }),
   methods: {
     ...mapActions(["setUser"]),
 
     async registerUser() {
       this.errors = [];
       const db = getDatabase();
-      if (this.isFormValid()) {
-        try {
-          // console.log("register");
-          const auth = getAuth();
-          const credential = await createUserWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
-          const user = credential.user;
+      if (!this.$refs.form.validate()) return;
+      try {
+        const auth = getAuth();
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
+        const user = credential.user;
 
-          console.log(user);
-          // TODO: resolve this into ASYNC AWAIT
-          updateProfile(user, {
-            displayName: this.name,
-          }).then(
-            //REPLACE WITH SIMPLE FUNCTYION (TRY)
-            () => {
-              this.saveUsersToUserRef(user, db).then(() => {
-                this.setUser(user);
-                this.$router.push("/");
-              });
-            },
-            (error) => {
-              this.errors.push(error.message);
-            }
-          );
-        } catch (err) {
-          this.errors.push(err.message);
-        }
+        console.log(user);
+        // TODO: resolve this into ASYNC AWAIT
+
+        updateProfile(user, {
+          displayName: this.name,
+        }).then(
+          () => {
+            this.saveUsersToUserRef(user, db).then(() => {
+              this.setUser(user);
+              this.$router.push("/");
+            });
+          },
+          (error) => {
+            console.error(error.message);
+          }
+        );
+      } catch (err) {
+        console.error(err.message);
       }
     },
     saveUsersToUserRef(user, db) {
@@ -166,62 +170,9 @@ export default {
         email: user.email,
       });
     },
-    // TODO:Set to vuetify
-    isEmpty() {
-      if (
-        this.password.length == 0 ||
-        this.email.length == 0 ||
-        this.confirm_password.length == 0 ||
-        this.name.length == 0
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    PasswordValid() {
-      if (
-        this.password.length > 6 &&
-        this.confirm_password.length > 6 &&
-        this.password === this.confirm_password
-      ) {
-        return true;
-      }
-      return false;
-    },
-
-    isFormValid() {
-      if (this.isEmpty()) {
-        this.errors.push("Empty fields not allowed!");
-        return false;
-      }
-      if (!this.PasswordValid()) {
-        this.errors.push(
-          "Password length must be same and both passwords shall be same."
-        );
-        return false;
-      }
-      return true;
-    },
   },
 
   name: "RegisterView",
-  data: () => ({
-    errors: [],
-    step: 1,
-    name: "",
-    password: "",
-    confirm_password: "",
-    email: "",
-  }),
-  computed: {
-    hasErrors() {
-      return this.errors.length > 0;
-    },
-  },
-  props: {
-    source: String,
-  },
 };
 </script>
 
