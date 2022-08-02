@@ -4,51 +4,19 @@
       "name": "Whereabouts",
       "users": [
         {
-          "userName": "asdad",
-          "email": "syedahsan13@hotmail.com"
-        },
-        {
           "userName": "Ahsan Naqvi",
           "email": "k191475@nu.edu.pk"
         },
         {
           "userName": "Mustafa",
           "email": "ahsan.naqvi@foundri.net"
+        },
+        {
+          "userName": "Salvador Sparks",
+          "email": "bejyhegev@mailinator.com"
         }
       ],
       "id": 2
-    },
-    {
-      "name": "QA Team",
-      "users": [
-        {
-          "userName": "asdad",
-          "email": "syedahsan13@hotmail.com"
-        },
-        {
-          "userName": "Ahsan Naqvi",
-          "email": "k191475@nu.edu.pk"
-        },
-        {
-          "userName": "Mustafa",
-          "email": "ahsan.naqvi@foundri.net"
-        }
-      ],
-      "id": 3
-    },
-    {
-      "name": "General",
-      "users": [
-        {
-          "userName": "Mustafa",
-          "email": "ahsan.naqvi@foundri.net"
-        },
-        {
-          "userName": "Ahsan Naqvi",
-          "email": "k191475@nu.edu.pk"
-        }
-      ],
-      "id": 4
     },
     {
       "name": "OXyDjCwCrJemjX1GaKNy0wnxbxE3-dMIoT17NwZRaOxP6gHqYyLp0c8W2",
@@ -105,16 +73,6 @@
         }
       ],
       "id": 8
-    },
-    {
-      "name": "Frontend Dev Team",
-      "users": [
-        {
-          "userName": "Mustafa",
-          "email": "ahsan.naqvi@foundri.net"
-        }
-      ],
-      "id": 9
     }
   ],
   "ExistingChannels": [

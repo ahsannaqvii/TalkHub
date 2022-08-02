@@ -115,7 +115,6 @@ import { mapActions } from "vuex";
 import { ref, getDatabase, set } from "firebase/database";
 import rules from "@/services/rules/rules";
 export default {
-
   props: {
     source: String,
   },
@@ -125,7 +124,7 @@ export default {
     password: "",
     confirm_password: "",
     email: "",
-    rules: rules
+    rules: rules,
   }),
   methods: {
     ...mapActions(["setUser"]),
@@ -146,19 +145,25 @@ export default {
         console.log(user);
         // TODO: resolve this into ASYNC AWAIT
 
-        updateProfile(user, {
-          displayName: this.name,
-        }).then(
-          () => {
-            this.saveUsersToUserRef(user, db).then(() => {
-              this.setUser(user);
-              this.$router.push("/");
-            });
-          },
-          (error) => {
-            console.error(error.message);
-          }
-        );
+        //refactor
+        await updateProfile(user, { displayName: this.name });
+        await this.saveUsersToUserRef(user,db)
+        this.setUser(user)
+        this.$router.push("/")
+
+        // updateProfile(user, {
+        //   displayName: this.name,
+        // }).then(
+        //   () => {
+        //     this.saveUsersToUserRef(user, db).then(() => {
+        //       this.setUser(user);
+        //       this.$router.push("/");
+        //     });
+        //   },
+        //   (error) => {
+        //     console.error(error.message);
+        //   }
+        // );
       } catch (err) {
         console.error(err.message);
       }

@@ -35,7 +35,11 @@ import { ref, getDatabase, onValue } from "firebase/database";
 import { mapGetters } from "vuex";
 import SingleMessage from "./Single-Message.vue";
 import MessageBox from "./MessageBox.vue";
+getMessages;
 import UserDetails from "../UserInfo/UserDetails.vue";
+import { getMessages } from "@/services/firebase/Messages";
+
+// import * as firebaseUtility from "@/services/firebase/Messages";
 export default {
   name: "channel-chat",
   data() {
@@ -64,10 +68,16 @@ export default {
     },
 
     // Get messages from firebase realtime DB.
+    // TODO:WIILL NEED TO SET THIS CURRENTCHANNEL.ID AS WELL
     getMessageDataFirebase() {
       const db = getDatabase();
       const MessagesRef = ref(db, "Messages/" + this.currentChannel.id);
       this.messages = [];
+
+      //FIREBASE UTILITY FUNCTION
+      // getMessages("Messages/", this.messages);
+      //FIREBASE UTILITY FUNCTION
+
       onValue(
         MessagesRef,
         (snapshot) => {

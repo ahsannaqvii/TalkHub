@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios';
+import {getChannels , updateChannels ,setChannels} from '@/services/firebase/Channels';
 Vue.use(Vuex)
 const state ={
     currentUser:null,
@@ -20,77 +20,94 @@ const getters={
 
 const actions  = {
     setUser(context,user){
-        // console.log(state)
         context.commit('SET_USER',user)
     },
     
-    async fetchChannels(context){
-        // TODO:USE THESE  ALL CONDITIONS IN COMPONENTS , DOESNT LOOOK FUNCTIONAL IN VUEX STORE 
-        const tempArr=[]
-        const response = await axios.get('http://localhost:3001/channels')
-        const data=response.data
-        // console.log(data)
+    async fetchChannels(context){ 
+        const channelsList=await getChannels("Channels/",{specificChannel:false})
         
-
-        this.tempArr=[]
-        // TODO:FIND AN EASIER WAY TO DO THIS 
-        for ( var i=0; i<data.length ;i++){
-            const len=data[i].users.length
-            for(var j=0;j<len;j++){
-                if(data[i].users[j].email===state.currentUser.email){
-                    if(tempArr.indexOf(data[i].name) ===-1){  //value not found
-                        tempArr.push(data[i].name)
-                        // console.log(tempArr)
-                        
-                            context.commit('SET_USER_CHANNELS', {
-                                ...data[i]
-                            })
-                    }       
-                }
-                else{
-                    continue
-                }
-            }
-        }
-    },
-    async setChannelInDatabase(context,obj){
-        // console.log(obj)
-        const {users}=obj
-        // console.log(users)
-        //returns a new array with common Channel
-            const response=await axios.get(`http://localhost:3001/channels?q=${obj.name}`)
-            if(!response.data.length){
-                //If the user object exists , we will convert that to arr 
-                if(obj.users && !Array.isArray(obj.users)) obj.users=[obj.users]
-    
-                const res=await axios.post('http://localhost:3001/channels',obj)
-                context.commit('ADD_NEW_CHANNEL',res.data)
-            }
-            else{
-                if(!obj.isDirect){
-                    // console.log('ELSE WORKING')
-                    const newLength=response.data[0].users.push(users)
-                    console.log(newLength)
-                    // const data=response.data[0] //OBJECT.
-                    // console.log(response.data[0])
-                    try{    
-                    const res=await axios.put(`http://localhost:3001/channels/${response.data[0].id}`,response.data[0])
-                    context.commit('ADD_NEW_CHANNEL',res.data)
-                    }catch(e){
-                        console.log(e.message)
+        //Iterate over the array of objects to find the common emails in user's list and current Logged in user email.
+        channelsList.forEach((channel)=>{
+            for(var key in channel){
+                for(var key2 in channel[key].users){
+                    if(channel[key].users[key2].email===state.currentUser.email){
+                        // TODO:MOMIN BHAI HELP TO SEND PROPER ARGS 
+                        context.commit('SET_USER_CHANNELS', {
+                             tempChannel:channel[key],key
+                        })
                     }
                 }
-                else{
-                    context.commit('ADD_NEW_CHANNEL',obj)
+            }
+        })
+
+        // const response = await axios.get('http://localhost:3001/channels')
+
+        // const data=response.data
+        // this.tempArr=[]
+        // // TODO:FIND AN EASIER WAY TO DO THIS 
+        // for ( var i=0; i<data.length ;i++){
+        //     const len=data[i].users.length
+        //     for(var j=0;j<len;j++){
+        //         if(data[i].users[j].email===state.currentUser.email){
+        //             if(tempArr.indexOf(data[i].name) ===-1){  //value not found
+        //                 tempArr.push(data[i].name)                        
+        //                     context.commit('SET_USER_CHANNELS', {
+        //                         ...data[i]
+        //                     })
+        //             }       
+        //         }
+        //         else{
+        //             continue
+        //         }
+        //     }
+        // }
+    },
+    async setChannelInDatabase(context,newChannelData){
+        const {users,name}=newChannelData 
+
+        //Returns the information of specific channel based on 'NAME'
+        const specificChannelData=await  getChannels( "Channels/",{name , specificChannel:true}  )
+
+        //If channel is not present
+        if(!specificChannelData){
+
+            //If the user object exists , we will convert that to arr 
+            if(newChannelData.users && !Array.isArray(newChannelData.users)) newChannelData.users=[newChannelData.users]
+            
+            //Firebase utility function to set channels in DB.
+
+            // TODO:SETTLE THE ID PROBLEM FOR DIRECT MESSAGE 
+            setChannels("Channels/",newChannelData)
+            
+            //Set new channel to userChannels list in vuexStore
+            context.commit('ADD_NEW_CHANNEL',newChannelData) 
+
+        }
+            
+         //Append the user's list if channel exists.
+        else{
+             //If the message is not private (one to one ):
+            if(!newChannelData.isDirect){
+                const newLength=specificChannelData.channel.users.push(users)
+                console.log(newLength)
+
+                
+                updateChannels("Channels/" + specificChannelData.key , specificChannelData)
+                context.commit('ADD_NEW_CHANNEL',specificChannelData) 
 
                 }
-               
-            } 
+                // If messagetype is 'Direct Message'
+                else{
+                    context.commit('ADD_NEW_CHANNEL',newChannelData)
+
+                }
+            }
+            
         
+    
         
     },
     setCurrentChannel(context,currChannel){
-        // console.log("USER'S CURRENT CHANNEL IN USERS.JS" , currChannel)
         context.commit('SET_CURRENT_CHANNEL',currChannel)
     }
 }
@@ -98,11 +115,15 @@ const mutations ={
     SET_USER(state,user){
         state.currentUser=user
     },
-    SET_USER_CHANNELS:function(state,channelData){
-        state.userChannels.push(channelData)
+        // TODO:SET THIS PARAMS 
+
+    SET_USER_CHANNELS:function(state,{tempChannel}){
+        state.userChannels.push(tempChannel)
         
     },
-    ADD_NEW_CHANNEL:function(state,channel){
+        // TODO:SET THIS PARAMS 
+
+    ADD_NEW_CHANNEL:function(state,{channel}){
         state.userChannels.push(channel)
         
     },
@@ -112,8 +133,6 @@ const mutations ={
 
 
 }
-
-//THIS SHALL BE NAMED EXPORTS NOT DEFAULT BECAUSE DEFAULT TOU AIK HI HUTA HAI .
 export  {
     state,
     getters,

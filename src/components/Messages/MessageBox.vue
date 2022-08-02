@@ -73,6 +73,7 @@ export default {
       if (this.currentChannel !== "") {
         if (this.message.length > 0) {
           let messageID = (Math.random() + 1).toString(36).substring(7);
+          // TODO:WILL NEED TO CHANGE THIS AS WELL
           set(ref(db, "Messages/" + this.currentChannel.id + "/" + messageID), {
             content: this.message,
             timestamp: myDate,

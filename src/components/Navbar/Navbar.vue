@@ -1,14 +1,8 @@
 <template>
   <div>
-    <v-toolbar
-      dark
-      color="#350d36"
-      clipped-left
-      fixed
-      app
-      height="40px"
-      class="header"
-    >
+    <!-- app -->
+    <!-- clipped-left -->
+    <v-toolbar dark color="#350d36" fixed height="40px" class="header">
       <v-list-tile-avatar>
         <img
           src="../../assets/slacklogo.png"

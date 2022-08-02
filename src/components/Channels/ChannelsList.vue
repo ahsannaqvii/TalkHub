@@ -14,7 +14,7 @@
         <!-- TODO:Perform css on active channels  -->
         <li
           v-for="channel in generalizedData"
-          :key="channel.id"
+          :key="channel.key"
           @click="changeChannel(channel)"
         >
           <v-icon style="color: white; font-size: 16px"
@@ -56,7 +56,10 @@ export default {
     toggleHandler() {
       this.toggle = !this.toggle;
     },
+
+    // @Params: ChannelInfo consist of an ID ,name and users field.
     changeChannel(channelInfo) {
+      console.log(channelInfo);
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,

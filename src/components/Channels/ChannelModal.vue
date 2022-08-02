@@ -51,7 +51,6 @@
                 </h2>
 
                 <h6>{{ channel.Name }}</h6>
-                <!-- TODO:Find a better way to render this  -->
                 <button
                   class="single-channel-ext-btn-design"
                   @click.prevent="addChannel(channel)"
@@ -116,7 +115,7 @@ export default {
 
       return true;
     },
-    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in DB.json
+    //When the user presses 'Join' , addChannel is triggered which in turn sets the values in realtimeDB
     // and in vueX store(currentChannel)
 
     addChannel(channel) {
@@ -124,7 +123,7 @@ export default {
         name: channel.Name, //Channel Name
         users: {
           userName: this.getCurrentUser.displayName, //User Name
-          email: this.getCurrentUser.email,
+          email: this.getCurrentUser.email, //user email3
         },
       };
       this.$store.dispatch("setChannelInDatabase", newChannelObj);

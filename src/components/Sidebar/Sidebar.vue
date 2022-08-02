@@ -88,10 +88,10 @@ export default {
       this.showForm = updatedTitle;
     },
     getUserDataFirebase() {
-      console.log(this.userData);
+      // console.log(this.userData);
       const db = getDatabase();
       const UsersRef = ref(db, "Users/");
-      console.log(UsersRef);
+      // console.log(UsersRef);
       this.userData = [];
       onValue(
         UsersRef,
@@ -217,11 +217,3 @@ ul {
   text-align: justify;
 }
 </style>
-
-<!-- ----------------------------------------------------------------------  -->
-<!-- // setDefaultChannel() { // console.log("DID IT MOUNT?"); //
-console.log(this.userChannels[0]) // const [first]=this.userChannels //
-console.log([first]) // if (this.userChannels) { //
-this.$store.dispatch("setCurrentChannel", this.userChannels[0]); //CURRENT
-CHANNEL RETRIEVAL // console.log("working?"); // } else { // console.log("NOT
-WORKING?"); // } // }, -->
