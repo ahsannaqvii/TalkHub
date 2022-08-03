@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import {
   getChannels,
   updateChannels,
-  setChannels,
+  pushNewChannel,
 } from "@/services/firebase/Channels";
 
 Vue.use(Vuex);
@@ -71,7 +71,7 @@ const actions = {
 
       //TODO:ID LAO JO NEW ADDDED CHANNEL HUA HAI USKI
       console.log(newChannelData);
-      setChannels(newChannelData);
+      pushNewChannel(newChannelData); //using the push method of firebase.
 
       //Set new channel to userChannels list in vuexStore
       context.commit("ADD_NEW_CHANNEL", newChannelData);
@@ -87,7 +87,6 @@ const actions = {
       //set the new Direct message channel in UserChannels list.
 
       //If the message is not private (one to one ):
-      // console.log(specificChannelData);
 
       specificChannelData.channel.users.push(users);
       const { channel, key } = specificChannelData;

@@ -20,13 +20,18 @@ export async function getChannels(channelInfo = {}) {
 
 // @Params : databaseParentKey refers to channels - > childKey
 // @Param2: newChannelData refers to the new set of channel Data to be set in DB
-export async function setChannels(newChannelData) {
-  var parentKey = "";
-  if (newChannelData.isDirect)
-    parentKey = CHANNEL_KEY.BROADCAST + newChannelData.key;
-  else parentKey = CHANNEL_KEY.BROADCAST;
+export async function pushNewChannel(newChannelData) {
+  console.log(newChannelData);
 
-  await firebase.setDataInFirebase(parentKey, newChannelData);
+  var parentKey = "";
+  if (newChannelData.isDirect) {
+    parentKey = CHANNEL_KEY.BROADCAST + newChannelData.key;
+    firebase.updateExistingChildData(parentKey, newChannelData);
+  } else {
+    parentKey = CHANNEL_KEY.BROADCAST;
+
+    await firebase.pushDataFirebase(parentKey, newChannelData);
+  }
 }
 
 // @Params : databaseParentKey refers to channels - > childKey

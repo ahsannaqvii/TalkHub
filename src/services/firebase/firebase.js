@@ -1,8 +1,27 @@
-import { ref, getDatabase, get, child } from "firebase/database";
+import {
+  ref,
+  getDatabase,
+  get,
+  child,
+  // query,
+  // orderByChild,
+  // orderByValue,
+  // limitToFirst,
+} from "firebase/database";
 import { set, push, onValue } from "firebase/database";
 
 // Get the database reference , take options as params , if onlyValues : true , tou sirf Object.values dedo
 //else sarey onlyValues : false tou return snapshot.val()
+// export function tempFunction(databaseChildKey, databaseParentKey) {
+//   console.log(databaseChildKey, databaseParentKey);
+//   const db = getDatabase();
+
+//   // const DataRef = query(ref(db, databaseParentKey), orderByChild("content"));
+
+//   onValue(DataRef, (snapshot) => {
+//     console.log(snapshot.val());
+//   });
+// }
 export function getStreamingData(
   databaseChildKey,
   callback,
@@ -25,7 +44,6 @@ export function getStreamingData(
 export async function getDataFromFirebase(databaseParentKey) {
   //Get the database reference from firebase.
   const databaseRef = ref(getDatabase());
-  //   console.log(databaseParentKey);
 
   try {
     //Returns the child data of parent eg : "Channels/" , "Messages/"
@@ -52,24 +70,31 @@ export async function updateExistingChildData(databaseParentKey, DataToUpdate) {
   const databaseRef = ref(db, databaseParentKey);
   await set(databaseRef, DataToUpdate).catch((e) => {
     console.log(e.message);
-    ``;
   });
 }
 // @Params : databaseParentKey represent the DB parent key
 //@Params : newChannelData refers to the new data to be added into DB.
-export async function setDataInFirebase(databaseParentKey, newChannelData) {
+export async function pushDataFirebase(databaseParentKey, newChannelData) {
+  // const db = getDatabase();
+
+  // //Get the database reference to parent node.
+  // const databaseRef = ref(db, databaseParentKey);
+  // if (!newChannelData.isDirect) {
+  //   //Push the data using push() which would create an Unique ID as key and insert the child data.
+  //   const childData = push(databaseRef);
+  //   // if(newChannelData )
+  //   return await set(childData, newChannelData);
+  // } else {
+  //   console.log("ye chala?");
+
+  //   return await set(ref(db, databaseParentKey), newChannelData);
+  // }
   const db = getDatabase();
 
   //Get the database reference to parent node.
   const databaseRef = ref(db, databaseParentKey);
-  if (!newChannelData.isDirect) {
-    //Push the data using push() which would create an Unique ID as key and insert the child data.
-    const childData = push(databaseRef);
-    // if(newChannelData )
-    return await set(childData, newChannelData);
-  } else {
-    console.log("ye chala?");
-
-    return await set(ref(db, databaseParentKey), newChannelData);
-  }
+  //Push the data using push() which would create an Unique ID as key and insert the child data.
+  const childData = push(databaseRef);
+  // if(newChannelData )
+  return await set(childData, newChannelData);
 }

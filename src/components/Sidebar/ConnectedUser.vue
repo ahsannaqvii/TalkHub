@@ -3,7 +3,7 @@
 <template>
   <section class="sidebar-user">
     <div class="sidebar-user-info">
-      <h4>{{ this.currentUser.displayName.toUpperCase() }}</h4>
+      <h4>{{ currentUser.displayName }}</h4>
       <div>
         <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
         <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <span class="user-edit-icon"
+    <span class="user-edit-icon" @click="abc"
       ><v-icon class="user-edit-icon-actual">mdi-account-edit</v-icon></span
     >
   </section>
@@ -20,17 +20,16 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  props: {
+    currentUser2: Object,
+  },
   data() {
     return {};
   },
-  methods: {},
   computed: {
     ...mapGetters(["currentUser"]),
   },
   name: "ConnectedUser",
-  // created() {
-  //   this.currentUser();
-  // },
 };
 </script>
 
@@ -66,6 +65,9 @@ export default {
   font-size: 0.5rem;
   padding-right: 0.3rem;
 } */
+.sidebar-user-info h4 {
+  text-transform: uppercase;
+}
 .user-edit-icon {
   position: absolute;
   top: 0;

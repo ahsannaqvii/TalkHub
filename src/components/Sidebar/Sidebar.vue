@@ -8,7 +8,7 @@
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
-        <ConnectedUser currentUs />
+        <ConnectedUser />
         <section class="unread">
           <h5 class="unread-header">
             <span class="unread-icons">
@@ -60,7 +60,7 @@ import ConnectedUser from "./ConnectedUser.vue";
 import ChannelsList from "../Channels/ChannelsList.vue";
 import ChannelChat from "../Messages/ChannelChat.vue";
 import { CHANNEL_TYPE } from "@/services/constants";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
 import { ref, getDatabase, onValue } from "firebase/database";
 
@@ -77,10 +77,11 @@ export default {
   // mounted() {
   //   this.setDefaultChannel();
   // },
+  computed: mapGetters({
+    userChannels: "publicChannels",
+  }),
 
   methods: {
-    ...mapActions(["fetchChannels"]),
-
     setModalActive() {
       this.showForm = "channel-modal";
     },
@@ -88,10 +89,8 @@ export default {
       this.showForm = updatedTitle;
     },
     getRegisteredUserDataFirebase() {
-      // console.log(this.userData);
       const db = getDatabase();
       const UsersRef = ref(db, "Users/");
-      // console.log(UsersRef);
       // TODO:SET THIS FUNCTION
       this.userData = [];
       onValue(UsersRef, (snapshot) => {
@@ -104,11 +103,8 @@ export default {
   },
 
   created() {
-    //Called to get the User Channels.
-    this.fetchChannels();
     //Responsible for getting all registered users information from firebase AUTHENTICATION.
     this.getRegisteredUserDataFirebase();
-    //Get the user details
   },
   components: {
     ConnectedUser,
@@ -116,7 +112,6 @@ export default {
     "channel-chat": ChannelChat,
     "channel-modal": ChannelModal,
   },
-  computed: mapGetters({ userChannels: "publicChannels" }),
 };
 </script>
 
