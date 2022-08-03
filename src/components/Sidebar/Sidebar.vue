@@ -8,7 +8,7 @@
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
-        <ConnectedUser />
+        <ConnectedUser currentUs />
         <section class="unread">
           <h5 class="unread-header">
             <span class="unread-icons">
@@ -59,7 +59,7 @@
 import ConnectedUser from "./ConnectedUser.vue";
 import ChannelsList from "../Channels/ChannelsList.vue";
 import ChannelChat from "../Messages/ChannelChat.vue";
-import constants from "@/services/constants";
+import { CHANNEL_TYPE } from "@/services/constants";
 import { mapActions, mapGetters } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
 import { ref, getDatabase, onValue } from "firebase/database";
@@ -70,7 +70,7 @@ export default {
       userData: [],
       clicked: false,
       showForm: "channel-chat",
-      CHANNEL_TYPE: constants.CHANNEL_TYPE,
+      CHANNEL_TYPE: CHANNEL_TYPE,
     };
   },
   name: "Side-bar",
@@ -87,32 +87,28 @@ export default {
     changeScreen(updatedTitle) {
       this.showForm = updatedTitle;
     },
-    getUserDataFirebase() {
+    getRegisteredUserDataFirebase() {
       // console.log(this.userData);
       const db = getDatabase();
       const UsersRef = ref(db, "Users/");
       // console.log(UsersRef);
+      // TODO:SET THIS FUNCTION
       this.userData = [];
-      onValue(
-        UsersRef,
-        (snapshot) => {
-          snapshot.forEach((childSnapshot) => {
-            const childData = childSnapshot.val();
-            this.userData.push(childData);
-          });
-        },
-        {
-          onlyOnce: true,
-        }
-      );
+      onValue(UsersRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const childData = childSnapshot.val();
+          this.userData.push(childData);
+        });
+      });
     },
   },
 
   created() {
-    //Called to set the User Channels.
+    //Called to get the User Channels.
     this.fetchChannels();
     //Responsible for getting all registered users information from firebase AUTHENTICATION.
-    this.getUserDataFirebase();
+    this.getRegisteredUserDataFirebase();
+    //Get the user details
   },
   components: {
     ConnectedUser,

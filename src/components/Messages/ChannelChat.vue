@@ -31,15 +31,13 @@
   </section>
 </template>
 <script>
-import { ref, getDatabase, onValue } from "firebase/database";
 import { mapGetters } from "vuex";
 import SingleMessage from "./Single-Message.vue";
 import MessageBox from "./MessageBox.vue";
-getMessages;
-import UserDetails from "../UserInfo/UserDetails.vue";
-import { getMessages } from "@/services/firebase/Messages";
 
-// import * as firebaseUtility from "@/services/firebase/Messages";
+import UserDetails from "../UserInfo/UserDetails.vue";
+import { getMessageStream } from "@/services/firebase/Messages";
+
 export default {
   name: "channel-chat",
   data() {
@@ -48,12 +46,13 @@ export default {
       messages: [],
       userData: "",
       showUserProfile: false,
+      unsubcribeMessageQueue: null,
     };
   },
   watch: {
     currentChannel() {
       this.messages = [];
-      this.getMessageDataFirebase();
+      this.getMessagesDataFirebase();
       this.channel = this.currentChannel;
     },
   },
@@ -67,36 +66,34 @@ export default {
       this.showUserProfile = decision;
     },
 
-    // Get messages from firebase realtime DB.
-    // TODO:WIILL NEED TO SET THIS CURRENTCHANNEL.ID AS WELL
-    getMessageDataFirebase() {
-      const db = getDatabase();
-      const MessagesRef = ref(db, "Messages/" + this.currentChannel.id);
+    // Function response to get the messages from realtime firebase database.
+    getMessagesDataFirebase() {
       this.messages = [];
-
-      //FIREBASE UTILITY FUNCTION
-      // getMessages("Messages/", this.messages);
-      //FIREBASE UTILITY FUNCTION
-
-      onValue(
-        MessagesRef,
-        (snapshot) => {
-          snapshot.forEach((childSnapshot) => {
-            const childData = childSnapshot.val();
-            // console.log(childData);
-            this.messages.push(childData);
-            // console.log(this.messages);
-          });
-        },
-        {
-          onlyOnce: true,
-        }
+      this.initMessageQueue();
+    },
+    //Instantiate the basic message queue.
+    initMessageQueue() {
+      //Callback function to get the stream of data messages.
+      this.unsubcribeMessageQueue = getMessageStream(
+        this.currentChannel.key,
+        this.refreshMessageQueue
       );
+    },
+    //Update the messages everytime data is received.
+    refreshMessageQueue(updatedMessages = []) {
+      this.messages = updatedMessages;
+
+      //For patch case : --personal
+      // this.messages=[...this.messages , updatedMessages]
     },
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
-  mounted() {
-    this.getMessageDataFirebase();
+
+  created() {
+    this.getMessagesDataFirebase();
+  },
+  destroyed() {
+    this.unsubcribeMessageQueue();
   },
   components: { SingleMessage, MessageBox, UserDetails },
 };

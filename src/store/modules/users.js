@@ -1,142 +1,125 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import {getChannels , updateChannels ,setChannels} from '@/services/firebase/Channels';
-Vue.use(Vuex)
-const state ={
-    currentUser:null,
-    currentChannel:{
-        "name": "Whereabouts",
-        "id": 2
-    },
-    userChannels:[],
- }
+import Vue from "vue";
+import Vuex from "vuex";
+import {
+  getChannels,
+  updateChannels,
+  setChannels,
+} from "@/services/firebase/Channels";
 
-const getters={
-    currentUser:(state) =>state.currentUser,
-    userChannels:(state)=>state.userChannels,
-    currentChannel:(state)=>state.currentChannel,
-    publicChannels:(state)=>state.userChannels.filter((channel)=>!channel.isDirect)
-}
+Vue.use(Vuex);
+const state = {
+  currentUser: null,
+  currentChannel: null,
+  userChannels: [],
+};
 
-const actions  = {
-    setUser(context,user){
-        context.commit('SET_USER',user)
-    },
-    
-    async fetchChannels(context){ 
-        const channelsList=await getChannels("Channels/",{specificChannel:false})
-        
-        //Iterate over the array of objects to find the common emails in user's list and current Logged in user email.
-        channelsList.forEach((channel)=>{
-            for(var key in channel){
-                for(var key2 in channel[key].users){
-                    if(channel[key].users[key2].email===state.currentUser.email){
-                        // TODO:MOMIN BHAI HELP TO SEND PROPER ARGS 
-                        context.commit('SET_USER_CHANNELS', {
-                             tempChannel:channel[key],key
-                        })
-                    }
-                }
-            }
-        })
+const getters = {
+  currentUser: (state) => state.currentUser,
+  userChannels: (state) => state.userChannels,
+  currentChannel: (state) => state.currentChannel,
+  publicChannels: (state) =>
+    state.userChannels.filter((channel) => !channel.isDirect),
+};
 
-        // const response = await axios.get('http://localhost:3001/channels')
+const actions = {
+  setUser(context, user) {
+    context.commit("SET_USER", user);
+  },
 
-        // const data=response.data
-        // this.tempArr=[]
-        // // TODO:FIND AN EASIER WAY TO DO THIS 
-        // for ( var i=0; i<data.length ;i++){
-        //     const len=data[i].users.length
-        //     for(var j=0;j<len;j++){
-        //         if(data[i].users[j].email===state.currentUser.email){
-        //             if(tempArr.indexOf(data[i].name) ===-1){  //value not found
-        //                 tempArr.push(data[i].name)                        
-        //                     context.commit('SET_USER_CHANNELS', {
-        //                         ...data[i]
-        //                     })
-        //             }       
-        //         }
-        //         else{
-        //             continue
-        //         }
-        //     }
-        // }
-    },
-    async setChannelInDatabase(context,newChannelData){
-        const {users,name}=newChannelData 
+  async fetchChannels(context) {
+    const channelsList = await getChannels({
+      specificChannel: false,
+    });
 
-        //Returns the information of specific channel based on 'NAME'
-        const specificChannelData=await  getChannels( "Channels/",{name , specificChannel:true}  )
+    //Iterate over the array of objects to find the common emails in user's list and current Logged in user email.
+    //TODO:get all channels first and then call context commit.
+    // const tempArr = [];
+    // var i=0
+    for (let key in channelsList) {
+      //some is used to pick the current channel's email and current user Email.
+      if (
+        channelsList[key].users.some(
+          (el) => el.email === state.currentUser.email
+        )
+      )
+        context.commit("SET_USER_CHANNELS", { ...channelsList[key], key });
 
-        //If channel is not present
-        if(!specificChannelData){
-
-            //If the user object exists , we will convert that to arr 
-            if(newChannelData.users && !Array.isArray(newChannelData.users)) newChannelData.users=[newChannelData.users]
-            
-            //Firebase utility function to set channels in DB.
-
-            // TODO:SETTLE THE ID PROBLEM FOR DIRECT MESSAGE 
-            setChannels("Channels/",newChannelData)
-            
-            //Set new channel to userChannels list in vuexStore
-            context.commit('ADD_NEW_CHANNEL',newChannelData) 
-
-        }
-            
-         //Append the user's list if channel exists.
-        else{
-             //If the message is not private (one to one ):
-            if(!newChannelData.isDirect){
-                const newLength=specificChannelData.channel.users.push(users)
-                console.log(newLength)
-
-                
-                updateChannels("Channels/" + specificChannelData.key , specificChannelData)
-                context.commit('ADD_NEW_CHANNEL',specificChannelData) 
-
-                }
-                // If messagetype is 'Direct Message'
-                else{
-                    context.commit('ADD_NEW_CHANNEL',newChannelData)
-
-                }
-            }
-            
-        
-    
-        
-    },
-    setCurrentChannel(context,currChannel){
-        context.commit('SET_CURRENT_CHANNEL',currChannel)
+      // tempArr[i]=({ ...channelsList[key], key });
+      // i++;
     }
-}
-const mutations ={
-    SET_USER(state,user){
-        state.currentUser=user
-    },
-        // TODO:SET THIS PARAMS 
+    // console.log(tempArr);
+  },
+  async setChannelInDatabase(context, newChannelData) {
+    const { users, name } = newChannelData;
 
-    SET_USER_CHANNELS:function(state,{tempChannel}){
-        state.userChannels.push(tempChannel)
-        
-    },
-        // TODO:SET THIS PARAMS 
+    //Returns the information of specific channel based on 'NAME'
+    const specificChannelData = await getChannels({
+      name,
+      specificChannel: true,
+    });
 
-    ADD_NEW_CHANNEL:function(state,{channel}){
-        state.userChannels.push(channel)
-        
-    },
-    SET_CURRENT_CHANNEL:function(state,CurrChannel){
-        state.currentChannel=CurrChannel
+    // console.log(specificChannelData);
+    //If channel is not present
+    if (!specificChannelData) {
+      //If the user object exists , we will convert that to arr (For the first time data is inserted.)
+      if (newChannelData.users && !Array.isArray(newChannelData.users))
+        newChannelData.users = [newChannelData.users];
+
+      // TODO:SETTLE THE ID PROBLEM FOR DIRECT MESSAGE
+
+      //Firebase utility function to set channels in DB.
+
+      //TODO:ID LAO JO NEW ADDDED CHANNEL HUA HAI USKI
+      console.log(newChannelData);
+      setChannels(newChannelData);
+
+      //Set new channel to userChannels list in vuexStore
+      context.commit("ADD_NEW_CHANNEL", newChannelData);
     }
 
+    //Append the user's list if channel exists.
+    else {
+      // If messagetype is 'Direct Message'
 
-}
-export  {
-    state,
-    getters,
-    actions,
-    mutations,
-}
-    
+      if (newChannelData.isDirect) {
+        return context.commit("ADD_NEW_CHANNEL", newChannelData);
+      }
+      //set the new Direct message channel in UserChannels list.
+
+      //If the message is not private (one to one ):
+      // console.log(specificChannelData);
+
+      specificChannelData.channel.users.push(users);
+      const { channel, key } = specificChannelData;
+
+      updateChannels(specificChannelData.key, specificChannelData);
+      channel["key"] = key;
+      context.commit("ADD_NEW_CHANNEL", channel);
+    }
+  },
+  //Set the current active channel of user and pushes the channel into array of channels.
+  setCurrentChannel(context, currChannel) {
+    console.log(currChannel);
+    context.commit("SET_CURRENT_CHANNEL", currChannel);
+  },
+};
+const mutations = {
+  SET_USER(state, user) {
+    state.currentUser = user;
+  },
+  // TODO:SET THIS PARAMS
+
+  SET_USER_CHANNELS: function (state, channelData) {
+    state.userChannels.push(channelData);
+  },
+  // TODO:SET THIS PARAMS
+
+  ADD_NEW_CHANNEL: function (state, channelData) {
+    state.userChannels.push(channelData);
+  },
+  SET_CURRENT_CHANNEL: function (state, CurrChannel) {
+    console.log(CurrChannel);
+    state.currentChannel = CurrChannel;
+  },
+};
+export { state, getters, actions, mutations };

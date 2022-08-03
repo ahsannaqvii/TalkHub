@@ -29,7 +29,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import constants from "@/services/constants";
+import { CHANNEL_TYPE } from "@/services/constants";
+
 export default {
   name: "ChannelsList",
   props: {
@@ -45,7 +46,7 @@ export default {
   },
   computed: {
     isTypeDM() {
-      return this.type === constants.CHANNEL_TYPE.DIRECT_MESSAGE;
+      return this.type === CHANNEL_TYPE.DIRECT_MESSAGE;
     },
     ...mapGetters(["currentUser"]),
   },
@@ -59,22 +60,11 @@ export default {
 
     // @Params: ChannelInfo consist of an ID ,name and users field.
     changeChannel(channelInfo) {
-      console.log(channelInfo);
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
       } = this.currentUser;
-
-      // TODO:ACTIVE WALA KAAM REHTA HAI
-      // setActiveChannel(channel) {
-      //   return (
-      //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
-      //     channel.channelName === this.$store.getters.currentChannel.channelName
-      //   );
-      // },
-
-      // debugger; //eslint-disable-line no-debugger
 
       if (this.isTypeDM) {
         const channelIdentifier = `${channelInfo.id}-${currentUserId}`;
@@ -94,15 +84,16 @@ export default {
           users.pop();
         }
         let newChannelObj = {
-          name: channelIdentifier,
-          displayName: channelInfo.name,
+          key: channelIdentifier,
+          name: channelInfo.name,
           isDirect: true,
           users,
         };
         this.$store.dispatch("setChannelInDatabase", newChannelObj);
-        // this.$store.dispatch("setCurrentChannel", channelInfo);
+        this.$store.dispatch("setCurrentChannel", newChannelObj);
+      } else {
+        this.$store.dispatch("setCurrentChannel", channelInfo);
       }
-      this.$store.dispatch("setCurrentChannel", channelInfo);
       this.$emit("changeMode", "channel-chat");
     },
   },
@@ -152,3 +143,10 @@ export default {
   
 } */
 </style>
+<!-- // TODO:ACTIVE WALA KAAM REHTA HAI
+      // setActiveChannel(channel) {
+      //   return (
+      //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
+      //     channel.channelName === this.$store.getters.currentChannel.channelName
+      //   );
+      // }, -->

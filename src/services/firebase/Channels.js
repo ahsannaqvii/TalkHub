@@ -1,46 +1,39 @@
-
-import * as  firebase from "./firebase"
+import { CHANNEL_KEY } from "../constants";
+import * as firebase from "./firebase";
 
 //@params : channelInfo consist of name of channel and specificChannel : true/false
-export async function getChannels(databaseParentKey,channelInfo){
+export async function getChannels(channelInfo = {}) {
+  const allChannels = await firebase.getDataFromFirebase(CHANNEL_KEY.BROADCAST);
 
-    const allChannels= await firebase.getDataFromFirebase(databaseParentKey)
-    var specificChannel=""
-    //Search for a specific  existing channel and return 
-    if(channelInfo.specificChannel){
-    //   debugger; //eslint-disable-line no-debugger
-      allChannels.forEach(channel=>{
-            for(let key in channel) 
+  //If specific channels does not exist , return all channels.
+  if (!channelInfo.specificChannel) return allChannels;
 
-                if(channel[key].name===channelInfo.name){
-                    specificChannel={channel :channel[key] , key}
-                    
-                    break;
-                }
-    
-        })
-        return specificChannel
+  let specificChannel = "";
+  for (let key in allChannels)
+    if (allChannels[key].name === channelInfo.name) {
+      specificChannel = { channel: allChannels[key], key };
+      break;
+    }
 
-     }else{
-        return allChannels
-     }
-
-
+  return specificChannel;
 }
 
-// @Params : databaseParentKey refers to channels - > childKey 
+// @Params : databaseParentKey refers to channels - > childKey
 // @Param2: newChannelData refers to the new set of channel Data to be set in DB
-export async function setChannels(databaseParentKey,newChannelData){
-   const response=await firebase.setDataInFirebase(databaseParentKey,newChannelData)
-   console.log(response)
- 
+export async function setChannels(newChannelData) {
+  var parentKey = "";
+  if (newChannelData.isDirect)
+    parentKey = CHANNEL_KEY.BROADCAST + newChannelData.key;
+  else parentKey = CHANNEL_KEY.BROADCAST;
+
+  await firebase.setDataInFirebase(parentKey, newChannelData);
 }
 
-// @Params : databaseParentKey refers to channels - > childKey 
-// @Param2: channel refers to the incoming data to be updated in the firebase along the respective keys 
-export  function updateChannels(databaseParentKey ,{channel}){
-
-  firebase.updateExistingChildData(databaseParentKey ,channel)
-
+// @Params : databaseParentKey refers to channels - > childKey
+// @Param2: channel refers to the incoming data to be updated in the firebase along the respective keys
+export function updateChannels(databaseParentKey, { channel }) {
+  firebase.updateExistingChildData(
+    CHANNEL_KEY.BROADCAST + databaseParentKey,
+    channel
+  );
 }
-

@@ -69,20 +69,24 @@ export default {
       });
 
       //Set the Messages in Firebase Database
+      // TODO:WILL NEED TO CHANGE THIS AS WELL
+
       const db = getDatabase();
       if (this.currentChannel !== "") {
         if (this.message.length > 0) {
           let messageID = (Math.random() + 1).toString(36).substring(7);
-          // TODO:WILL NEED TO CHANGE THIS AS WELL
-          set(ref(db, "Messages/" + this.currentChannel.id + "/" + messageID), {
-            content: this.message,
-            timestamp: myDate,
-            user: {
-              id: currentUserId,
-              email: currentUserEmail,
-              name: currentUserDisplayName,
-            },
-          });
+          set(
+            ref(db, "Messages/" + this.currentChannel.key + "/" + messageID),
+            {
+              content: this.message,
+              timestamp: myDate,
+              user: {
+                id: currentUserId,
+                email: currentUserEmail,
+                name: currentUserDisplayName,
+              },
+            }
+          );
         }
       }
 

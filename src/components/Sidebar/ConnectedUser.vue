@@ -23,13 +23,14 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    // Get the current logged in user Details
-  },
+  methods: {},
   computed: {
     ...mapGetters(["currentUser"]),
   },
   name: "ConnectedUser",
+  // created() {
+  //   this.currentUser();
+  // },
 };
 </script>
 
