@@ -2,12 +2,12 @@
   <section class="feedss">
     <article class="feed">
       <section class="feeds-user-avatar">
-        <avatar
+        <Avatar
           :fullname="this.message.user.name"
           radius="15"
           size="30"
-          color="#2eb67d"
-        ></avatar>
+          color="#AD1457"
+        ></Avatar>
       </section>
       <section class="feed-content">
         <section class="feed-user-info">

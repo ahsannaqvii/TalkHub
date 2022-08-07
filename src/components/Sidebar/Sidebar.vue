@@ -2,9 +2,17 @@
   <main class="main">
     <section class="sidebar">
       <div class="sidebar-1">
-        <div class="box-1"></div>
-        <div class="box-2"></div>
-        <button class="box-3" @click="setModalActive()">+</button>
+        <div class="box-1" v-for="channel in userChannels" :key="channel.key">
+          <avatar
+            :fullname="channel.name"
+            radius="15"
+            size="30"
+            color="#AD1457"
+          ></avatar>
+        </div>
+        <button class="box-3" @click="setModalActive()">
+          <v-icon style="color: #350d36; margin-bottom: 10px">mdi-plus</v-icon>
+        </button>
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
@@ -63,6 +71,7 @@ import { CHANNEL_TYPE } from "@/services/constants";
 import { mapGetters } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
 import { ref, getDatabase, onValue } from "firebase/database";
+import Avatar from "vue-avatar-component";
 
 export default {
   data() {
@@ -96,6 +105,7 @@ export default {
       onValue(UsersRef, (snapshot) => {
         snapshot.forEach((childSnapshot) => {
           const childData = childSnapshot.val();
+          console.log(childData);
           this.userData.push(childData);
         });
       });
@@ -109,6 +119,7 @@ export default {
   components: {
     ConnectedUser,
     ChannelsList,
+    Avatar,
     "channel-chat": ChannelChat,
     "channel-modal": ChannelModal,
   },
@@ -154,32 +165,20 @@ ul {
 .sidebar-1 .box-1 {
   margin-top: 1rem;
 }
-.sidebar-1 .box-1,
-.sidebar-1 .box-2 {
+.sidebar-1 .box-1 {
   height: 2rem;
   width: 2rem;
   margin-bottom: 0.5rem;
-  border: 0.125rem solid;
   border-radius: 0.3rem;
 }
-.sidebar-1 .box-1 {
-  background-color: #2eb67d;
-}
-
-.sidebar-1 .box-2 {
-  background-color: #ecb22e;
-}
-.sidebar-1 .box-2:hover,
-.sidebar-1 .box-1:hover {
-  box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
-}
 .sidebar-1 .box-3 {
+  height: 2rem;
+  width: 2rem;
+  padding-top: 2px;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  background-color: lightgrey;
   font-size: 1.5rem;
-  color: white;
-}
-.sidebar-2 {
-  grid-column: 2 / -1;
-  overflow: hidden;
 }
 
 /* READ / UNREAD MSGS  */

@@ -26,30 +26,25 @@ const actions = {
     context.commit("SET_USER", user);
   },
 
-  async fetchChannels(context) {
+  async fetchChannels(context, {user}) {
     const channelsList = await getChannels({
       specificChannel: false,
     });
 
     //Iterate over the array of objects to find the common emails in user's list and current Logged in user email.
-    //TODO:get all channels first and then call context commit.
-    // const tempArr = [];
-    // var i=0
+
     for (let key in channelsList) {
       //some is used to pick the current channel's email and current user Email.
       if (
         channelsList[key].users.some(
-          (el) => el.email === state.currentUser.email
+          (el) => el.email === user.email
         )
       )
         context.commit("SET_USER_CHANNELS", { ...channelsList[key], key });
-
-      // tempArr[i]=({ ...channelsList[key], key });
-      // i++;
     }
-    // console.log(tempArr);
   },
   async setChannelInDatabase(context, newChannelData) {
+    console.log(newChannelData);
     const { users, name } = newChannelData;
 
     //Returns the information of specific channel based on 'NAME'
@@ -58,23 +53,17 @@ const actions = {
       specificChannel: true,
     });
 
-    // console.log(specificChannelData);
     //If channel is not present
     if (!specificChannelData) {
       //If the user object exists , we will convert that to arr (For the first time data is inserted.)
       if (newChannelData.users && !Array.isArray(newChannelData.users))
         newChannelData.users = [newChannelData.users];
 
-      // TODO:SETTLE THE ID PROBLEM FOR DIRECT MESSAGE
-
       //Firebase utility function to set channels in DB.
 
-      //TODO:ID LAO JO NEW ADDDED CHANNEL HUA HAI USKI
-      console.log(newChannelData);
-      pushNewChannel(newChannelData); //using the push method of firebase.
-
+      const key = await pushNewChannel(newChannelData); //using the push method of firebase.
       //Set new channel to userChannels list in vuexStore
-      context.commit("ADD_NEW_CHANNEL", newChannelData);
+      context.commit("ADD_NEW_CHANNEL", { ...newChannelData, key });
     }
 
     //Append the user's list if channel exists.
@@ -98,7 +87,6 @@ const actions = {
   },
   //Set the current active channel of user and pushes the channel into array of channels.
   setCurrentChannel(context, currChannel) {
-    console.log(currChannel);
     context.commit("SET_CURRENT_CHANNEL", currChannel);
   },
 };
@@ -106,12 +94,10 @@ const mutations = {
   SET_USER(state, user) {
     state.currentUser = user;
   },
-  // TODO:SET THIS PARAMS
 
   SET_USER_CHANNELS: function (state, channelData) {
     state.userChannels.push(channelData);
   },
-  // TODO:SET THIS PARAMS
 
   ADD_NEW_CHANNEL: function (state, channelData) {
     state.userChannels.push(channelData);

@@ -118,11 +118,13 @@ export default {
     //When the user presses 'Join' , addChannel is triggered which in turn sets the values in realtimeDB
     // and in vueX store(currentChannel)
     addChannel(channel) {
+      console.log("workng?");
+
       let newChannelObj = {
         name: channel.Name, //Channel Name
         users: {
-          userName: this.getCurrentUser.displayName, //User Name
-          email: this.getCurrentUser.email, //user email3
+          userName: this.currentUser.user.displayName, //User Name
+          email: this.currentUser.user.email, //user email3
         },
       };
       this.$store.dispatch("setChannelInDatabase", newChannelObj);
@@ -139,11 +141,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["userChannels"]),
-    getCurrentUser() {
-      return this.$store.getters.currentUser;
-    },
-  },
+    ...mapGetters(["userChannels", "currentUser"]),
+  },  
 };
 </script>
 
@@ -168,15 +167,21 @@ export default {
     "footer";
 }
 
+::placeholder {
+  color: black;
+}
 .search-bar-input {
   background-color: white;
+  color: black;
+}
+.search-bar-input ::placeholder {
+  color: black;
 }
 .search-bar-input:focus {
   background-color: #350d36;
   color: white;
 }
 input {
-  /* box-shadow: 2px 8px 8px 8px lightblue, 8px 8px 8px 8px lightblue; */
   width: 98%;
   height: 35px;
   margin-top: 20px;
@@ -184,10 +189,7 @@ input {
   border-radius: 4px;
   border: 1px solid lightgrey;
 }
-/* input:hover {
-  background-color: #350d36;
-  border-color: #350d36;
-} */
+
 .results {
   display: flex;
   padding-bottom: 5px;
@@ -262,10 +264,7 @@ input {
 .button {
   transition-duration: 0.4s;
 }
-button:hover {
-  background-color: #350d36; /* Green */
-  color: white;
-}
+
 .channel-status {
   display: flex;
   font-size: 16px;

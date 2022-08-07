@@ -75,26 +75,13 @@ export async function updateExistingChildData(databaseParentKey, DataToUpdate) {
 // @Params : databaseParentKey represent the DB parent key
 //@Params : newChannelData refers to the new data to be added into DB.
 export async function pushDataFirebase(databaseParentKey, newChannelData) {
-  // const db = getDatabase();
-
-  // //Get the database reference to parent node.
-  // const databaseRef = ref(db, databaseParentKey);
-  // if (!newChannelData.isDirect) {
-  //   //Push the data using push() which would create an Unique ID as key and insert the child data.
-  //   const childData = push(databaseRef);
-  //   // if(newChannelData )
-  //   return await set(childData, newChannelData);
-  // } else {
-  //   console.log("ye chala?");
-
-  //   return await set(ref(db, databaseParentKey), newChannelData);
-  // }
   const db = getDatabase();
 
   //Get the database reference to parent node.
   const databaseRef = ref(db, databaseParentKey);
   //Push the data using push() which would create an Unique ID as key and insert the child data.
-  const childData = push(databaseRef);
-  // if(newChannelData )
-  return await set(childData, newChannelData);
+  const res = await push(databaseRef, newChannelData);
+  console.log(res.key);
+  return res.key
+
 }

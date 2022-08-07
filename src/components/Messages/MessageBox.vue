@@ -1,11 +1,13 @@
 <template>
-  <form class="form" name="MessageForm">
+  <form class="form" name="MessageForm" @submit="sendMessage">
     <input
       class="input"
       id="messageBox"
       placeholder="Type your Message"
       v-model.trim="message"
     />
+    <!-- v-on:click.ctrl="doSomething" -->
+
     <div class="input-messagebox-icons">
       <div class="move-left">
         <v-icon>mdi-lightning-bolt</v-icon>
@@ -52,13 +54,18 @@ export default {
     };
   },
   methods: {
-    sendMessage() {
+    // doSomething() {
+    //   this.message = this.message + "\n" + "abc";
+    //   console.log(this.message);
+    // },
+    sendMessage(event) {
+      event.preventDefault();
       //Destructing Object to get Ids, ermail and display Name
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
-      } = this.currentUser;
+      } = this.currentUser.user;
 
       //Get the timestamp
       const date = new Date();

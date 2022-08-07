@@ -21,22 +21,24 @@ export async function getChannels(channelInfo = {}) {
 // @Params : databaseParentKey refers to channels - > childKey
 // @Param2: newChannelData refers to the new set of channel Data to be set in DB
 export async function pushNewChannel(newChannelData) {
-  console.log(newChannelData);
 
   var parentKey = "";
+  //If the channel is 'Direct Messaging' then  the channel shall be updated(without the need of a generated UID)
   if (newChannelData.isDirect) {
     parentKey = CHANNEL_KEY.BROADCAST + newChannelData.key;
     firebase.updateExistingChildData(parentKey, newChannelData);
   } else {
     parentKey = CHANNEL_KEY.BROADCAST;
 
-    await firebase.pushDataFirebase(parentKey, newChannelData);
+   const key= await firebase.pushDataFirebase(parentKey, newChannelData);
+   return key;
   }
 }
 
 // @Params : databaseParentKey refers to channels - > childKey
 // @Param2: channel refers to the incoming data to be updated in the firebase along the respective keys
 export function updateChannels(databaseParentKey, { channel }) {
+  //Updates the existing child information(users array.)
   firebase.updateExistingChildData(
     CHANNEL_KEY.BROADCAST + databaseParentKey,
     channel

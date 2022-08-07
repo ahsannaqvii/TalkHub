@@ -71,9 +71,7 @@
                       organization
                     </h5>
                   </v-card-text>
-                  <div class="error-ui-message" v-if="hasErrors">
-                    <p v-for="error in errors" :key="error.id">{{ error }}</p>
-                  </div>
+
                   <div class="text-center">
                     <router-link
                       to="/register"
@@ -112,7 +110,7 @@ export default {
     ...mapActions(["setUser", "fetchChannels"]),
     async login() {
       this.errors = [];
-      console.log(this.$refs.form);
+      // console.log(this.$refs.form);
 
       if (!this.$refs.form.validate()) return;
 
@@ -123,6 +121,7 @@ export default {
           this.email,
           this.password
         );
+        console.log(user);
         this.setUser(user);
 
         this.fetchChannels(user);

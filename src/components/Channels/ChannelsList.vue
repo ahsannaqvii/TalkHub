@@ -1,8 +1,8 @@
 <template>
   <article class="sidebar-2">
     <section class="sidebar-channels">
-      <h5 class="sidebar-channels-header">
-        <span class="unread-icons" @click="toggleHandler()">
+      <h5 class="sidebar-channels-header" @click="toggleHandler()">
+        <span class="unread-icons">
           <v-icon v-if="toggle" style="color: white"
             >mdi-account-arrow-right</v-icon
           >
@@ -11,7 +11,6 @@
         {{ name }}
       </h5>
       <ul class="main-list" v-if="!toggle">
-        <!-- TODO:Perform css on active channels  -->
         <li
           v-for="channel in generalizedData"
           :key="channel.key"
@@ -60,12 +59,13 @@ export default {
 
     // @Params: ChannelInfo consist of an ID ,name and users field.
     changeChannel(channelInfo) {
+      console.log(channelInfo);
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
-      } = this.currentUser;
-
+      } = this.currentUser.user;
+      console.log(currentUserId);
       if (this.isTypeDM) {
         const channelIdentifier = `${channelInfo.id}-${currentUserId}`;
         // List of two users

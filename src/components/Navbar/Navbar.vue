@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- app -->
-    <!-- clipped-left -->
     <v-toolbar dark color="#350d36" fixed height="40px" class="header">
       <v-list-tile-avatar>
         <img
@@ -30,17 +28,15 @@
         <v-row justify="space-around">
           <v-menu bottom origin="center center" transition="scale-transition">
             <template v-slot:activator="{ on, attrs }">
-              <!-- style="margin-left: 20px; margin-top: 17px" -->
-
-              <v-avatar
-                class="mr-10 user-img-wrapper"
-                color="#FFFFFF"
+              <avatar
+                :fullname="currentUser.user.displayName"
+                class="user-img-wrapper"
+                radius="15"
                 size="30"
+                color="#AD1457"
                 v-bind="attrs"
                 v-on="on"
-              >
-                <img src="../../assets/avatar.jpg" />
-              </v-avatar>
+              ></avatar>
             </template>
 
             <v-list style="margin-top: 50px" width>
@@ -65,14 +61,17 @@
 </template>
 
 <script>
+import Avatar from "vue-avatar-component";
+import { mapGetters } from "vuex";
+
 import { getAuth, signOut } from "firebase/auth";
 export default {
+  computed: mapGetters(["currentUser"]),
   methods: {
     logout() {
       const auth = getAuth();
       signOut(auth)
         .then(() => {
-          console.log("signed out");
           this.$store.dispatch("setUser", null);
           this.$router.push("/login");
         })
@@ -82,25 +81,19 @@ export default {
     },
   },
   name: "NavBar",
+  components: {
+    Avatar,
+  },
   data() {
     return {
       showSearchInput: true,
-      items: [
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me 2" },
-      ],
+      items: [{ title: "Update Profile" }, { title: "View Profile" }],
     };
   },
 };
 </script>
 
 <style>
-.code-red {
-  color: red;
-  border: 4px;
-}
 .header {
   width: 100%;
 }
@@ -109,7 +102,7 @@ export default {
   height: 1.5rem;
   border: 0.1rem solid #ccc;
   border-radius: 5px;
-  background-color: rgb(67, 30, 68);
+  background-color: #350d36;
   padding-left: calc(30rem - 23rem);
   margin-right: 180px;
   box-shadow: inset 0 0 0 1px rgb(104, 74, 104);
@@ -117,10 +110,10 @@ export default {
 }
 .search-bar-input:focus {
   background-color: white;
-  color: white;
+  color: black;
 }
 .search-bar-input::placeholder {
-  color: var(white);
+  color: white;
 }
 .user-img-wrapper {
   margin-top: 17px;

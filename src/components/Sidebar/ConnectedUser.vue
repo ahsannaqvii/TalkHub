@@ -3,7 +3,7 @@
 <template>
   <section class="sidebar-user">
     <div class="sidebar-user-info">
-      <h4>{{ currentUser.displayName }}</h4>
+      <h4>{{ currentUser.user.displayName }}</h4>
       <div>
         <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
         <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
@@ -11,8 +11,10 @@
       </div>
     </div>
 
-    <span class="user-edit-icon" @click="abc"
-      ><v-icon class="user-edit-icon-actual">mdi-account-edit</v-icon></span
+    <span class="user-edit-icon"
+      ><v-icon class="user-edit-icon-actual" style="color: black"
+        >mdi-account-edit</v-icon
+      ></span
     >
   </section>
 </template>
@@ -75,6 +77,7 @@ export default {
   width: 2rem;
   height: 2rem;
   border: 0.1rem solid white;
+  color: black;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -82,7 +85,8 @@ export default {
   background-color: white;
 }
 .user-edit-icon-actual {
-  color: white;
-  height: 2px;
+  background-color: white;
+
+  height: 4px;
 }
 </style>
