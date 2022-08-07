@@ -3,7 +3,7 @@
 <template>
   <section class="sidebar-user">
     <div class="sidebar-user-info">
-      <h4>{{ currentUser.user.displayName }}</h4>
+      <h4>{{ currentUser.displayName }}</h4>
       <div>
         <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
         <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
@@ -12,7 +12,7 @@
     </div>
 
     <span class="user-edit-icon"
-      ><v-icon class="user-edit-icon-actual" style="color: black"
+      ><v-icon class="user-edit-icon-actual" style="color: #212121"
         >mdi-account-edit</v-icon
       ></span
     >

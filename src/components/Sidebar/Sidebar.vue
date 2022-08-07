@@ -105,7 +105,6 @@ export default {
       onValue(UsersRef, (snapshot) => {
         snapshot.forEach((childSnapshot) => {
           const childData = childSnapshot.val();
-          console.log(childData);
           this.userData.push(childData);
         });
       });

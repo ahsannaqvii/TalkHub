@@ -23,10 +23,11 @@ const getters = {
 
 const actions = {
   setUser(context, user) {
+    console.log("caled?");
     context.commit("SET_USER", user);
   },
 
-  async fetchChannels(context, {user}) {
+  async fetchChannels(context, user) {
     const channelsList = await getChannels({
       specificChannel: false,
     });
@@ -35,11 +36,7 @@ const actions = {
 
     for (let key in channelsList) {
       //some is used to pick the current channel's email and current user Email.
-      if (
-        channelsList[key].users.some(
-          (el) => el.email === user.email
-        )
-      )
+      if (channelsList[key].users.some((el) => el.email === user.email))
         context.commit("SET_USER_CHANNELS", { ...channelsList[key], key });
     }
   },

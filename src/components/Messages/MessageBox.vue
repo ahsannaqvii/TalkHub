@@ -65,7 +65,7 @@ export default {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
-      } = this.currentUser.user;
+      } = this.currentUser;
 
       //Get the timestamp
       const date = new Date();

@@ -29,7 +29,7 @@
           <v-menu bottom origin="center center" transition="scale-transition">
             <template v-slot:activator="{ on, attrs }">
               <avatar
-                :fullname="currentUser.user.displayName"
+                :fullname="currentUser.displayName"
                 class="user-img-wrapper"
                 radius="15"
                 size="30"

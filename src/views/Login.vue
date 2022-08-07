@@ -10,20 +10,27 @@
                   <v-card-text class="mt-12">
                     <h1
                       class="text-center display-2 text--accent-3"
-                      style="color: #ecb22e"
+                      style="color: #350d36"
                     >
                       Sign in to AI-Slack
                     </h1>
                     <div class="text-center mt-4">
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-facebook-f</v-icon>
+                      <v-btn class="mx-2" depressed fab color="white">
+                        <img
+                          style="border-radius: 50px; border-style: none"
+                          src="../assets/facebook.jpg"
+                          height="58px"
+                          width="58px"
+                        />
                       </v-btn>
 
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-google-plus-g</v-icon>
-                      </v-btn>
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-linkedin-in</v-icon>
+                      <v-btn
+                        class="mx-2"
+                        fab
+                        color="white"
+                        @click="signInWithGoogle"
+                      >
+                        <img src="../assets/google.jpg" height="40px" />
                       </v-btn>
                     </div>
                     <h4 class="text-center mt-4">
@@ -55,7 +62,7 @@
                   <div class="text-center mt-3">
                     <v-btn
                       rounded
-                      style="background-color: #ecb22e"
+                      style="background-color: #350d36"
                       dark
                       @click.prevent="login"
                       >SIGN IN</v-btn
@@ -93,8 +100,11 @@
 <script>
 import { mapActions } from "vuex";
 import rules from "@/services/rules/rules";
+import {
+  SignInWithGoogle,
+  SignInWithEmailPassword,
+} from "@/services/firebase/Users";
 
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 export default {
   name: "LoginView",
   data: () => ({
@@ -108,32 +118,32 @@ export default {
   },
   methods: {
     ...mapActions(["setUser", "fetchChannels"]),
+    //Function designed to help users signin with Google.
+
+    async signInWithGoogle() {
+      const user = await SignInWithGoogle();
+      this.setUser(user);
+      this.$router.push("/");
+    },
+    //Function designed to help users login with email and password.
     async login() {
       this.errors = [];
-      // console.log(this.$refs.form);
 
       if (!this.$refs.form.validate()) return;
-
-      try {
-        const auth = getAuth();
-        const user = await signInWithEmailAndPassword(
-          auth,
-          this.email,
-          this.password
-        );
-        console.log(user);
-        this.setUser(user);
-
-        this.fetchChannels(user);
-        this.$router.push("/");
-      } catch (err) {
-        console.error(err.message);
-      }
+      const user = await SignInWithEmailPassword(this.email, this.password);
+      console.log(user);
+      this.setUser(user);
+      this.fetchChannels(user);
+      this.$router.push("/");
     },
   },
 };
 </script>
 <style scoped>
+.googlesignin {
+  background-color: orange;
+  color: orange;
+}
 .error-ui-message {
   display: block;
   height: 50px;

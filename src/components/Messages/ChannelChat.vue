@@ -37,7 +37,6 @@ import MessageBox from "./MessageBox.vue";
 
 import UserDetails from "../UserInfo/UserDetails.vue";
 import { getMessageStream } from "@/services/firebase/Messages";
-// import { tempFunction } from "@/services/firebase/Messages";
 
 export default {
   name: "channel-chat",
@@ -61,7 +60,6 @@ export default {
   methods: {
     //Function responsible to get an event from child and toggle the showUserProfile data variable.
     showDetails(UserData) {
-      // tempFunction(this.currentChannel.key);
       this.userData = UserData;
       this.showUserProfile = !this.showUserProfile;
     },

@@ -1,27 +1,14 @@
 import {
-  ref,
-  getDatabase,
-  get,
-  child,
-  // query,
-  // orderByChild,
-  // orderByValue,
-  // limitToFirst,
-} from "firebase/database";
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { ref, getDatabase, get, child } from "firebase/database";
 import { set, push, onValue } from "firebase/database";
 
-// Get the database reference , take options as params , if onlyValues : true , tou sirf Object.values dedo
-//else sarey onlyValues : false tou return snapshot.val()
-// export function tempFunction(databaseChildKey, databaseParentKey) {
-//   console.log(databaseChildKey, databaseParentKey);
-//   const db = getDatabase();
-
-//   // const DataRef = query(ref(db, databaseParentKey), orderByChild("content"));
-
-//   onValue(DataRef, (snapshot) => {
-//     console.log(snapshot.val());
-//   });
-// }
+//Function designed to get Stream  messages with callback
 export function getStreamingData(
   databaseChildKey,
   callback,
@@ -39,7 +26,6 @@ export function getStreamingData(
 }
 
 // @Params : databaseParentKey represent the DB parent key
-// TODO:write a query to DB-night
 
 export async function getDataFromFirebase(databaseParentKey) {
   //Get the database reference from firebase.
@@ -49,7 +35,6 @@ export async function getDataFromFirebase(databaseParentKey) {
     //Returns the child data of parent eg : "Channels/" , "Messages/"
     const snapshot = await get(child(databaseRef, databaseParentKey));
     if (!snapshot.exists()) return null;
-    // console.log(snapshot.val());
     const data = snapshot.val();
     return data;
   } catch (e) {
@@ -72,6 +57,7 @@ export async function updateExistingChildData(databaseParentKey, DataToUpdate) {
     console.log(e.message);
   });
 }
+
 // @Params : databaseParentKey represent the DB parent key
 //@Params : newChannelData refers to the new data to be added into DB.
 export async function pushDataFirebase(databaseParentKey, newChannelData) {
@@ -82,6 +68,52 @@ export async function pushDataFirebase(databaseParentKey, newChannelData) {
   //Push the data using push() which would create an Unique ID as key and insert the child data.
   const res = await push(databaseRef, newChannelData);
   console.log(res.key);
-  return res.key
+  return res.key;
+}
 
+// Below functions are designed generically to cater the Google Sign in Providers and signInWithEmailAndPassword
+
+export async function signInWithGoogleProvider() {
+  console.log("function working.");
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const response = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(response);
+    const token = credential.accessToken;
+    console.log(token, "ignored \n");
+    // The signed-in user info.
+    const user = response.user;
+    return user;
+  } catch (error) {
+    // Handle Errors here.
+    const errorMessage = error.message;
+
+    console.log(errorMessage);
+  }
+}
+export async function SignUpWithEmail(email, password) {
+  try {
+    const auth = getAuth();
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return credential.user;
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+export async function SignInWithEmailPassword(email,password) {
+  const auth = getAuth();
+  try {
+    const userDetails = await signInWithEmailAndPassword(auth, email, password);
+    console.log(userDetails);
+    const { user } = userDetails;
+    return user;
+  } catch (e) {
+    console.log(e.message);
+  }
 }

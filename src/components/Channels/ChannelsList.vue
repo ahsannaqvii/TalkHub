@@ -64,7 +64,7 @@ export default {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
-      } = this.currentUser.user;
+      } = this.currentUser;
       console.log(currentUserId);
       if (this.isTypeDM) {
         const channelIdentifier = `${channelInfo.id}-${currentUserId}`;

@@ -10,12 +10,17 @@
                   <v-card-text class="white--text mt-12">
                     <h1 class="text-center display-1">Welcome Back!</h1>
                     <h5 class="text-center">
-                      To Keep connected with us please login with your personnel
-                      info
+                      Enter your personal information to keep yourself connected
+                      with us.
                     </h5>
                   </v-card-text>
                   <div class="text-center">
-                    <v-btn rounded outlined dark @click="step--">Sign in</v-btn>
+                    <router-link
+                      to="/login"
+                      style="text-decoration: none; color: inherit"
+                    >
+                      <v-btn rounded outlined dark>SIGN IN</v-btn>
+                    </router-link>
                   </div>
                 </v-col>
                 <v-col cols="12" md="8">
@@ -27,15 +32,22 @@
                       Create Account
                     </h1>
                     <div class="text-center mt-4">
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-facebook-f</v-icon>
+                      <v-btn class="mx-2" depressed fab color="white">
+                        <img
+                          style="border-radius: 50px; border-style: none"
+                          src="../assets/facebook.jpg"
+                          height="58px"
+                          width="58px"
+                        />
                       </v-btn>
 
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-google-plus-g</v-icon>
-                      </v-btn>
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-linkedin-in</v-icon>
+                      <v-btn
+                        class="mx-2"
+                        fab
+                        color="white"
+                        @click="RegisterWithGoogle"
+                      >
+                        <img src="../assets/google.jpg" height="40px" />
                       </v-btn>
                     </div>
                     <h4 class="text-center mt-4">
@@ -105,15 +117,16 @@
 </template>
 
 <script>
+import { updateProfile } from "firebase/auth";
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
+  RegisterWithEmailPassword,
+  SignInWithGoogle,
+} from "@/services/firebase/Users";
 
 import { mapActions } from "vuex";
 import { ref, getDatabase, set } from "firebase/database";
 import rules from "@/services/rules/rules";
+
 export default {
   props: {
     source: String,
@@ -128,45 +141,28 @@ export default {
   }),
   methods: {
     ...mapActions(["setUser"]),
+    //Function designed to help users register with Google.
+    async RegisterWithGoogle() {
+      const user = await SignInWithGoogle();
+      this.setUser(user);
+      this.$router.push("/");
+    },
 
     async registerUser() {
       this.errors = [];
       const db = getDatabase();
       if (!this.$refs.form.validate()) return;
-      try {
-        const auth = getAuth();
-        const credential = await createUserWithEmailAndPassword(
-          auth,
-          this.email,
-          this.password
-        );
-        const user = credential.user;
 
-        console.log(user);
-        // TODO: resolve this into ASYNC AWAIT
+      //Method to allow users to sign in with email and password.
+      const user = await RegisterWithEmailPassword(this.email, this.password);
 
-        //refactor
-        await updateProfile(user, { displayName: this.name });
-        await this.saveUsersToUserRef(user,db)
-        this.setUser(user)
-        this.$router.push("/")
+      //Firebase function to update profile.
+      await updateProfile(user, { displayName: this.name });
+      //Helper function to update data(User profile) in DB
+      await this.saveUsersToUserRef(user, db);
 
-        // updateProfile(user, {
-        //   displayName: this.name,
-        // }).then(
-        //   () => {
-        //     this.saveUsersToUserRef(user, db).then(() => {
-        //       this.setUser(user);
-        //       this.$router.push("/");
-        //     });
-        //   },
-        //   (error) => {
-        //     console.error(error.message);
-        //   }
-        // );
-      } catch (err) {
-        console.error(err.message);
-      }
+      this.setUser(user);
+      this.$router.push("/");
     },
     saveUsersToUserRef(user, db) {
       return set(ref(db, "Users/" + user.uid), {
