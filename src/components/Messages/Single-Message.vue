@@ -3,11 +3,15 @@
     <article class="feed">
       <section class="feeds-user-avatar">
         <Avatar
-          :fullname="this.message.user.name"
+          :fullname="message.user.name"
           radius="15"
           size="30"
           color="#AD1457"
         ></Avatar>
+        <span
+          v-if="currentUser.email === this.message.user.email"
+          class="feeds-user-active"
+        ></span>
       </section>
       <section class="feed-content">
         <section class="feed-user-info">
@@ -29,19 +33,29 @@
 
 <script>
 import Avatar from "vue-avatar-component";
-
+import { mapGetters } from "vuex";
 export default {
+  data() {
+    return {
+      // url: "",
+    };
+  },
+  props: ["message"],
+
+  name: "Single-Message",
+
+  components: { Avatar },
+  computed: mapGetters(["currentUser"]),
   methods: {
+    getPhotoURL() {
+      this.url = this.currentUser.photoURL;
+      return this.url;
+    },
     showDetails() {
       const { user } = this.message;
       this.$emit("showDetails", user);
     },
   },
-  props: ["message"],
-
-  name: "Single-component",
-
-  components: { Avatar },
 };
 </script>
 
@@ -53,11 +67,12 @@ export default {
 
 .feed {
   display: flex;
-  padding: 0.5rem;
+  padding: 0.7rem;
   padding-bottom: 0;
   margin-left: 1rem;
   margin-right: 2rem;
 }
+
 .feed-content {
   text-align: left;
 }
@@ -75,20 +90,19 @@ export default {
   border-radius: 0.325rem;
 }
 .feeds-user-avatar span {
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 0.1rem solid var(yellow);
+  width: 2px;
+  height: 2rem;
   border-radius: 0.275rem;
-  padding: 0.2rem;
+  padding: 1px;
   box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(yellow);
-  color: var(white);
+
+  background-color: yellowgreen;
   position: absolute;
-  top: 1.5rem;
-  right: -0.3rem;
+  bottom: 8px;
+  margin-right: 5px;
+  margin-left: 5px;
+  right: -0.5rem;
 }
 .feeds-user-info {
   display: flex;
@@ -99,6 +113,7 @@ export default {
   margin-right: 0.5rem;
   font-weight: bold;
   cursor: pointer;
+  margin-top: -4px;
 }
 
 .feed-user-info h4 .time-stamp {

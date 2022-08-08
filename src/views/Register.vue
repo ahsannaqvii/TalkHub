@@ -140,11 +140,17 @@ export default {
     rules: rules,
   }),
   methods: {
-    ...mapActions(["setUser"]),
+    ...mapActions(["setUser", "fetchChannels"]),
     //Function designed to help users register with Google.
     async RegisterWithGoogle() {
+      const db = getDatabase();
+
       const user = await SignInWithGoogle();
+      await this.saveUsersToUserRef(user, db);
+
       this.setUser(user);
+      this.fetchChannels(user);
+
       this.$router.push("/");
     },
 
@@ -160,8 +166,9 @@ export default {
       await updateProfile(user, { displayName: this.name });
       //Helper function to update data(User profile) in DB
       await this.saveUsersToUserRef(user, db);
-
+      //VueX store to set the state variable 'User'
       this.setUser(user);
+      this.fetchChannels(user);
       this.$router.push("/");
     },
     saveUsersToUserRef(user, db) {

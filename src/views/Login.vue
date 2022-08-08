@@ -118,15 +118,20 @@ export default {
   },
   methods: {
     ...mapActions(["setUser", "fetchChannels"]),
-    //Function designed to help users signin with Google.
 
+    //Function designed to help users signin with Google.
     async signInWithGoogle() {
+      console.log("sign in with google");
       const user = await SignInWithGoogle();
       this.setUser(user);
+      this.fetchChannels(user);
       this.$router.push("/");
     },
+
     //Function designed to help users login with email and password.
     async login() {
+      console.log("sign in with email");
+
       this.errors = [];
 
       if (!this.$refs.form.validate()) return;

@@ -6,6 +6,7 @@
           src="../../assets/slacklogo.png"
           height="20px"
           style="padding-right: 20px; margin-top: 7px"
+          @click="abcd"
         />
       </v-list-tile-avatar>
       <v-toolbar-title class="headline text-uppercase white--text">
@@ -28,7 +29,17 @@
         <v-row justify="space-around">
           <v-menu bottom origin="center center" transition="scale-transition">
             <template v-slot:activator="{ on, attrs }">
+              <img
+                v-if="getPhotoURL"
+                :src="`${currentUser.photoURL}`"
+                height="30px"
+                style="margin-top: 16px; border-radius: 10px"
+                v-bind="attrs"
+                v-on="on"
+              />
+
               <avatar
+                v-else
                 :fullname="currentUser.displayName"
                 class="user-img-wrapper"
                 radius="15"
@@ -39,7 +50,7 @@
               ></avatar>
             </template>
 
-            <v-list style="margin-top: 50px" width>
+            <v-list style="margin-top: 30px" width>
               <v-list-item v-for="(item, i) in items" :key="i">
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
               </v-list-item>
@@ -66,8 +77,16 @@ import { mapGetters } from "vuex";
 
 import { getAuth, signOut } from "firebase/auth";
 export default {
-  computed: mapGetters(["currentUser"]),
+  computed: {
+    ...mapGetters(["currentUser"]),
+    getPhotoURL() {
+      return this.currentUser.photoURL;
+    },
+  },
   methods: {
+    abcd() {
+      console.log(this.currentUser.photoURL);
+    },
     logout() {
       const auth = getAuth();
       signOut(auth)
@@ -117,6 +136,9 @@ export default {
 }
 .user-img-wrapper {
   margin-top: 17px;
+}
+.user-img-wrapper2 {
+  margin-top: 10px;
 }
 .icons {
   display: flex;

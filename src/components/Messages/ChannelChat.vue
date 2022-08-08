@@ -1,5 +1,4 @@
 <template>
-  <!-- <section class="body"> -->
   <section v-bind:class="[showUserProfile ? 'body' : 'body-full']">
     <section class="content">
       <section class="content-header">

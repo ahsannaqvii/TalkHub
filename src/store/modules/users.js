@@ -23,11 +23,13 @@ const getters = {
 
 const actions = {
   setUser(context, user) {
-    console.log("caled?");
+    console.log("SETUSER CALLED.?");
     context.commit("SET_USER", user);
   },
 
   async fetchChannels(context, user) {
+    console.log("FETCH CHANNELS CALLED.?");
+    console.log(user.email);
     const channelsList = await getChannels({
       specificChannel: false,
     });

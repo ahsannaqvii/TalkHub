@@ -77,7 +77,6 @@ export default {
   width: 2rem;
   height: 2rem;
   border: 0.1rem solid white;
-  color: black;
   border-radius: 50%;
   display: flex;
   justify-content: center;
