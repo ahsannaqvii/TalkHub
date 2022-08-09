@@ -8,10 +8,7 @@
               <v-row>
                 <v-col cols="12" md="8">
                   <v-card-text class="mt-12">
-                    <h1
-                      class="text-center display-2 text--accent-3"
-                      style="color: #350d36"
-                    >
+                    <h1 class="header-login" style="color: #350d36">
                       Sign in to AI-Slack
                     </h1>
                     <div class="text-center mt-4">
@@ -57,7 +54,6 @@
                         color="teal accent-3"
                       />
                     </v-form>
-                    <h3 class="text-center mt-4">Forgot your password ?</h3>
                   </v-card-text>
                   <div class="text-center mt-3">
                     <v-btn
@@ -145,6 +141,14 @@ export default {
 };
 </script>
 <style scoped>
+#inspire {
+  font-family: "Ubuntu", sans-serif;
+}
+.header-login {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
 .googlesignin {
   background-color: orange;
   color: orange;

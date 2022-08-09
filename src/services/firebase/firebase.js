@@ -20,7 +20,10 @@ export function getStreamingData(
   return onValue(DataRef, (snapshot) => {
     if (snapshot.val() !== null) {
       const messages = Object.values(snapshot.val());
-      callback(messages);
+      callback(messages, {
+        totalMessagesCount: messages.length,
+        currentChannelKey: snapshot.key,
+      });
     }
   });
 }
@@ -36,6 +39,7 @@ export async function getDataFromFirebase(databaseParentKey) {
     const snapshot = await get(child(databaseRef, databaseParentKey));
     if (!snapshot.exists()) return null;
     const data = snapshot.val();
+    console.log(data);
     return data;
   } catch (e) {
     console.error(e.message);
@@ -74,7 +78,6 @@ export async function pushDataFirebase(databaseParentKey, newChannelData) {
 // Below functions are designed generically to cater the Google Sign in Providers and signInWithEmailAndPassword
 
 export async function signInWithGoogleProvider() {
-  console.log("function working.");
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
 
@@ -82,7 +85,8 @@ export async function signInWithGoogleProvider() {
     const response = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(response);
     const token = credential.accessToken;
-    console.log(token, "ignored \n");
+    console.log(token, " \n");
+
     // The signed-in user info.
     const user = response.user;
     return user;
@@ -106,7 +110,7 @@ export async function SignUpWithEmail(email, password) {
     console.error(err.message);
   }
 }
-export async function SignInWithEmailPassword(email,password) {
+export async function SignInWithEmailPassword(email, password) {
   const auth = getAuth();
   try {
     const userDetails = await signInWithEmailAndPassword(auth, email, password);

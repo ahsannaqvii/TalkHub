@@ -37,8 +37,8 @@
         <section class="available-channels">
           <article class="avaiable-channel-list">
             <article
-              v-for="channel in existingChannel"
-              :key="channel.id"
+              v-for="(channel, index) in existingChannel"
+              :key="index"
               class="single-channel"
             >
               <!-- TODO:IF THE CHANNEL IS PRIVATE ASK FOR THE PASSWORD   -->
@@ -81,9 +81,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
-
+import { getChannels } from "@/services/firebase/Channels";
+import { CHANNEL_KEY } from "@/services/constants";
 export default {
   data() {
     return {
@@ -118,7 +118,6 @@ export default {
     //When the user presses 'Join' , addChannel is triggered which in turn sets the values in realtimeDB
     // and in vueX store(currentChannel)
     addChannel(channel) {
-
       let newChannelObj = {
         name: channel.Name, //Channel Name
         users: {
@@ -130,18 +129,18 @@ export default {
       this.$store.dispatch("setCurrentChannel", channel.Name);
     },
   },
+  
   //Store the existing Channels(Hardcoded channels) once the component is created.
   async created() {
-    try {
-      const res1 = await axios.get("http://localhost:3001/ExistingChannels");
-      this.existingChannel = res1.data;
-    } catch (e) {
-      console.log(e.message);
-    }
+    this.existingChannel = await getChannels({
+      specificChannel: false,
+      type: CHANNEL_KEY.EXISTINGCHANNELS,
+    });
+    this.existingChannel.shift();
   },
   computed: {
     ...mapGetters(["userChannels", "currentUser"]),
-  },  
+  },
 };
 </script>
 

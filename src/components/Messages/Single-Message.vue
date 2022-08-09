@@ -20,10 +20,26 @@
             <span class="time-stamp">{{ message.timestamp }}</span>
           </h4>
         </section>
+
         <div>
-          <p class="feed-text">
+          <p v-if="!isFile(message)" class="feed-text">
             {{ message.content }}
           </p>
+          <img
+            v-else-if="isImage(message)"
+            class="feed-image"
+            :src="message.image"
+          />
+          <iframe
+            title="Inline Frame Example"
+            :src="message.image"
+            height="300"
+            width="600"
+            allowfullscreen
+            loading
+            v-else
+          ></iframe>
+          <!-- <a class="feed-pdf-file" v-else :href="message.image">PDF</a> -->
         </div>
       </section>
     </article>
@@ -47,6 +63,24 @@ export default {
   components: { Avatar },
   computed: mapGetters(["currentUser"]),
   methods: {
+    isFile(message) {
+      return message.content === undefined && message.image != null;
+    },
+    isImage(message) {
+      if (message.image === undefined) {
+        return false;
+      }
+      //HARDCODED FOR NOW.
+      if (
+        message.image.toLowerCase().includes("jpeg") ||
+        message.image.toLowerCase().includes("JPG") ||
+        message.image.toLowerCase().includes("jpg")
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getPhotoURL() {
       this.url = this.currentUser.photoURL;
       return this.url;
@@ -89,6 +123,7 @@ export default {
   object-fit: cover;
   border-radius: 0.325rem;
 }
+
 .feeds-user-avatar span {
   width: 2px;
   height: 2rem;
@@ -136,81 +171,8 @@ export default {
   text-align: justify;
 }
 
-.quoted {
-  border-left: 0.3rem solid rgb(7, 105, 185);
-}
-.quoted h5 {
-  margin-left: 1rem;
-  color: rgb(7, 105, 185);
-  margin-bottom: 0.3rem;
-}
-.codeblock {
-  background-color: #3f0e40;
-  color: var(white);
-  padding: 0.2rem;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-  overflow-x: scroll;
-}
-
-.quoted-text {
-  margin-left: 1rem;
-}
-
-.mention {
-  padding: 0.1rem 0.2rem;
-  color: var(#376cdf);
-  border-radius: 0.2rem;
-  background-color: var(#f8f8f8);
-}
-
-.preparatory-text {
-  display: flex;
-  align-items: center;
-  font-weight: 300;
-  margin-bottom: 0.2rem;
-}
-.preparatory-text i {
-  margin-left: 0.3rem;
-  color: var(--dark-grey);
-}
-
-.file-figure {
-  border: 0.1rem solid var(white);
-  padding: 0.8rem 20rem 0.8rem 0.8rem;
-  border-radius: 0.375rem;
-  display: flex;
-  /* width: 34.5rem; */
-}
-.file-figure i {
-  color: var(green);
-  margin-right: 2rem;
-}
-.file-detail {
-  display: flex;
-  flex-direction: column;
-}
-.file-detail h5 {
-  font-weight: bold;
-  margin-bottom: 0.1rem;
-}
-.file-detail small {
-  font-weight: 300;
-  font-size: 0.8rem;
-}
-
-.message-info {
-  display: flex;
-  align-items: center;
-}
-.message-info .zenith-org {
-  margin-right: 0.5rem;
-}
-.message-info small {
-  font-size: 0.8rem;
-  font-weight: 300;
-}
-.message-info strong {
-  font-weight: bold;
+.feed-image {
+  height: 300px;
+  width: 250px;
 }
 </style>

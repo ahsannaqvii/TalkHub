@@ -30,9 +30,9 @@
   </section>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import SingleMessage from "./Single-Message.vue";
-import MessageBox from "./MessageBox.vue";
+import { mapGetters, mapActions } from "vuex";
+import SingleMessage from "../Messages/Single-Message.vue";
+import MessageBox from "../Messages/MessageBox.vue";
 
 import UserDetails from "../UserInfo/UserDetails.vue";
 import { getMessageStream } from "@/services/firebase/Messages";
@@ -45,6 +45,7 @@ export default {
       messages: [],
       userData: "",
       showUserProfile: false,
+      notifCount: [],
       unsubcribeMessageQueue: null,
     };
   },
@@ -58,6 +59,7 @@ export default {
   },
   methods: {
     //Function responsible to get an event from child and toggle the showUserProfile data variable.
+    ...mapActions(["setchannelNotifications"]),
     showDetails(UserData) {
       this.userData = UserData;
       this.showUserProfile = !this.showUserProfile;
@@ -80,12 +82,14 @@ export default {
       );
     },
     //Update the messages everytime data is received.
-    refreshMessageQueue(updatedMessages = []) {
+    refreshMessageQueue(updatedMessages = [], notificationDetails) {
       this.messages = updatedMessages;
-
+      console.log(notificationDetails);
+      this.setchannelNotifications(notificationDetails);
       //For patch case : --personal
       // this.messages=[...this.messages , updatedMessages]
     },
+   
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
 

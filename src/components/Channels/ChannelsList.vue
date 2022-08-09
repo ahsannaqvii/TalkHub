@@ -16,10 +16,24 @@
           :key="channel.key"
           @click="changeChannel(channel)"
         >
-          <v-icon style="color: white; font-size: 16px"
-            >mdi-account-group-outline</v-icon
-          >
-          {{ channel.name }}
+          <h4 style="text-decoration: none">
+            <v-icon v-if="!isTypeDM" style="color: white; font-size: 16px"
+              >mdi-account-group-outline</v-icon
+            >
+            <span v-else class="sidebar-online-status">
+              <i class="fas fa-circle"></i
+            ></span>
+            {{ channel.name }}
+
+            <span
+              class="sidebar-channel-notifications"
+              v-if="
+                getNotifications(channel) > 0 &&
+                channel.key !== currentChannel.key
+              "
+              >{{ getNotifications(channel) }}</span
+            >
+          </h4>
         </li>
       </ul>
     </section>
@@ -40,6 +54,7 @@ export default {
   },
   data() {
     return {
+      activeChannel: false,
       toggle: true,
     };
   },
@@ -47,25 +62,37 @@ export default {
     isTypeDM() {
       return this.type === CHANNEL_TYPE.DIRECT_MESSAGE;
     },
-    ...mapGetters(["currentUser"]),
+    ...mapGetters(["currentUser", "channelNotifCount", "currentChannel"]),
   },
 
   methods: {
-    ...mapActions(["fetchChannels", "setCurrentChannel"]),
-
+    ...mapActions(["fetchChannels", "setCurrentChannel", "resetNotifications"]),
+    getNotifications(channel) {
+      console.log(channel);
+      let notif = 0;
+      console.log(this.channelNotifCount);
+      this.channelNotifCount.forEach((el) => {
+        if (el.id === channel.key) {
+          notif = el.notif;
+          console.log(notif);
+        }
+      });
+      return notif;
+    },
     toggleHandler() {
       this.toggle = !this.toggle;
     },
 
     // @Params: ChannelInfo consist of an ID ,name and users field.
     changeChannel(channelInfo) {
-      console.log(channelInfo);
+      this.activeChannel = !this.activeChannel;
+      this.resetNotifications(channelInfo);
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,
         email: currentUserEmail,
       } = this.currentUser;
-      console.log(currentUserId);
+
       if (this.isTypeDM) {
         const channelIdentifier = `${channelInfo.id}-${currentUserId}`;
         // List of two users
@@ -104,7 +131,7 @@ export default {
 /* CHANNELS CSS  */
 .main-list {
   width: 100%;
-  height: 150px;
+  height: 200px;
   overflow-y: hidden;
   overflow-x: hidden;
 }
@@ -124,9 +151,9 @@ export default {
   font-size: 12px;
   margin-left: 23px;
   font-style: italic;
-  display: block;
+  /* display: block; */
   cursor: pointer;
-  text-align: justify;
+  /* text-align: justify; */
 }
 .sidebar-channels-header {
   color: white;
@@ -134,19 +161,36 @@ export default {
   align-items: center;
   margin-top: 0.7rem;
 }
-/* .is_active {
-  background-color: #d69c33;
-
-  height: 40px;
-  width: 40px;
-  border-radius: 8px;
-  
-} */
+.sidebar-online-status {
+  /* text-align: end; */
+  color: green;
+  /* justify-content: end; */
+  /* margin-left: 1rem; */
+  font-size: 8px;
+  /* margin-left: 20px; */
+  margin-right: 10px;
+}
+.active {
+  background-color: #376cdf;
+  font-weight: bold;
+  color: green;
+  font-size: 1rem;
+}
+.sidebar-channels .active > h4 {
+  color: green;
+  font-size: 1rem;
+}
+.sidebar-channel-notifications {
+  color: white;
+  background-color: #ad1457;
+  /* padding: 7px; */
+  padding: 2px;
+  /* opacity: 80%; */
+  font-size: 12px;
+  border-radius: 10px;
+  width: 18%;
+  height: 35%;
+  text-align: center;
+  float: right;
+}
 </style>
-<!-- // TODO:ACTIVE WALA KAAM REHTA HAI
-      // setActiveChannel(channel) {
-      //   return (
-      //     // TODO://LATER CHANGE THIS TO CHANNEL.ID
-      //     channel.channelName === this.$store.getters.currentChannel.channelName
-      //   );
-      // }, -->

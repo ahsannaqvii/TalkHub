@@ -4,16 +4,18 @@
   <section class="sidebar-user">
     <div class="sidebar-user-info">
       <h4>{{ currentUser.displayName }}</h4>
-      <div>
-        <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
-        <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
-        <!-- TODO:Time bacha to add an online / offline tag below the username  -->
-      </div>
+    </div>
+    <div class="sidebar-user-info-additional">
+      <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
+      <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
+      <span>
+        <h6><i class="fas fa-circle"></i>Online</h6></span
+      >
     </div>
 
     <span class="user-edit-icon"
       ><v-icon class="user-edit-icon-actual" style="color: #212121"
-        >mdi-account-edit</v-icon
+        >mdi-playlist-edit</v-icon
       ></span
     >
   </section>
@@ -54,19 +56,21 @@ export default {
   font-size: 0.5rem;
 }
 
-/* .sidebar-user-info-additional {
+.sidebar-user-info-additional {
   display: flex;
   align-items: center;
   margin-left: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.8rem;
-  color: white;
+  margin-top: 0.2rem;
+  /* margin-bottom: 1rem; */
+  font-size: 0.7rem;
+  color: grey;
+  font-style: italic;
 }
 .sidebar-user-info-additional i {
   color: green;
   font-size: 0.5rem;
   padding-right: 0.3rem;
-} */
+}
 .sidebar-user-info h4 {
   text-transform: uppercase;
 }
@@ -76,7 +80,8 @@ export default {
   right: 1rem;
   width: 2rem;
   height: 2rem;
-  border: 0.1rem solid white;
+  margin-bottom: 2rem;
+  /* border: 0.1rem solid white; */
   border-radius: 50%;
   display: flex;
   justify-content: center;

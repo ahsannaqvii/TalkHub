@@ -25,10 +25,7 @@
                 </v-col>
                 <v-col cols="12" md="8">
                   <v-card-text class="mt-12">
-                    <h1
-                      style="color: #350d36"
-                      class="text-center display-2 text--accent-3"
-                    >
+                    <h1 style="color: #350d36" class="header-register">
                       Create Account
                     </h1>
                     <div class="text-center mt-4">
@@ -185,6 +182,14 @@ export default {
 </script>
 
 <style scoped>
+#inspire {
+  font-family: "Ubuntu", sans-serif;
+}
+.header-register {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
 .error-ui-message {
   display: block;
   height: 50px;

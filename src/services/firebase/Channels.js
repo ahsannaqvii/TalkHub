@@ -3,8 +3,8 @@ import * as firebase from "./firebase";
 
 //@params : channelInfo consist of name of channel and specificChannel : true/false
 export async function getChannels(channelInfo = {}) {
-  const allChannels = await firebase.getDataFromFirebase(CHANNEL_KEY.BROADCAST);
-
+  const allChannels = await firebase.getDataFromFirebase(channelInfo.type);
+  console.log(allChannels);
   //If specific channels does not exist , return all channels.
   if (!channelInfo.specificChannel) return allChannels;
 
@@ -21,7 +21,6 @@ export async function getChannels(channelInfo = {}) {
 // @Params : databaseParentKey refers to channels - > childKey
 // @Param2: newChannelData refers to the new set of channel Data to be set in DB
 export async function pushNewChannel(newChannelData) {
-
   var parentKey = "";
   //If the channel is 'Direct Messaging' then  the channel shall be updated(without the need of a generated UID)
   if (newChannelData.isDirect) {
@@ -30,8 +29,8 @@ export async function pushNewChannel(newChannelData) {
   } else {
     parentKey = CHANNEL_KEY.BROADCAST;
 
-   const key= await firebase.pushDataFirebase(parentKey, newChannelData);
-   return key;
+    const key = await firebase.pushDataFirebase(parentKey, newChannelData);
+    return key;
   }
 }
 

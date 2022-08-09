@@ -4,6 +4,7 @@ export const CHANNEL_TYPE={
 }
 export const CHANNEL_KEY={
     BROADCAST:'Channels/',
-    MESSAGES:'Messages/'
+    MESSAGES:'Messages/',
+    EXISTINGCHANNELS:'ExistingChannels/'
 }
 

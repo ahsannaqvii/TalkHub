@@ -59,6 +59,7 @@
       </article>
     </section>
     <component v-bind:is="showForm"></component>
+
     <ChannelChat />
   </main>
 </template>
@@ -66,9 +67,9 @@
 <script>
 import ConnectedUser from "./ConnectedUser.vue";
 import ChannelsList from "../Channels/ChannelsList.vue";
-import ChannelChat from "../Messages/ChannelChat.vue";
+import ChannelChat from "../Channels/ChannelChat.vue";
 import { CHANNEL_TYPE } from "@/services/constants";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
 import { ref, getDatabase, onValue } from "firebase/database";
 import Avatar from "vue-avatar-component";
@@ -88,9 +89,13 @@ export default {
   // },
   computed: mapGetters({
     userChannels: "publicChannels",
+    currentChannel: "currentChannel",
+    channelNotifCount: "channelNotifCount",
   }),
 
   methods: {
+    ...mapActions(["fetchChannels", "clearChannels"]),
+
     setModalActive() {
       this.showForm = "channel-modal";
     },
@@ -100,7 +105,6 @@ export default {
     getRegisteredUserDataFirebase() {
       const db = getDatabase();
       const UsersRef = ref(db, "Users/");
-      // TODO:SET THIS FUNCTION
       this.userData = [];
       onValue(UsersRef, (snapshot) => {
         snapshot.forEach((childSnapshot) => {
@@ -112,6 +116,8 @@ export default {
   },
 
   created() {
+    // this.clearChannels();
+    // this.fetchChannels(); //To cater the page reload.
     //Responsible for getting all registered users information from firebase AUTHENTICATION.
     this.getRegisteredUserDataFirebase();
   },
