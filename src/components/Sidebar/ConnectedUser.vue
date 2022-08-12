@@ -1,44 +1,43 @@
+<!-- COMPONENT IS RESPONSIBLE FOR SHOWING THE USER INFORMATION ON SIDEBAR TOP  -->
+
 <template>
   <section class="sidebar-user">
     <div class="sidebar-user-info">
-      <h4>{{ this.currentUser1.displayName.toUpperCase() }}</h4>
-      <div>
-        <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
-        <v-icon style="color: white; height: 20px">mdi-arrow-down</v-icon>
-        <!-- TODO:Time bacha to add an online / offline tag below the username  -->
-      </div>
+      <h4>{{ currentUser.displayName }}</h4>
+    </div>
+    <div class="sidebar-user-info-additional">
+      <!-- TODO: SMALLER THE SIZE OF V-ICON  -->
+      <!-- <v-icon style="color: white; height: 12px">mdi-arrow-down</v-icon> -->
+      <span>
+        <h6><i class="fas fa-circle"></i>Online</h6></span
+      >
     </div>
 
     <span class="user-edit-icon"
-      ><v-icon class="user-edit-icon-actual">mdi-account-edit</v-icon></span
+      ><v-icon class="user-edit-icon-actual" style="color: #212121"
+        >mdi-playlist-edit</v-icon
+      ></span
     >
   </section>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-// import Channels from "./ChannelModal.vue";
 export default {
+  props: {
+    currentUser2: Object,
+  },
   data() {
     return {};
   },
-  methods: {
-    ...mapGetters(["currentUser"]),
-  },
   computed: {
-    currentUser1() {
-      return this.$store.getters.currentUser;
-    },
+    ...mapGetters(["currentUser"]),
   },
   name: "ConnectedUser",
 };
 </script>
 
 <style>
-.sidebar-2 {
-  grid-column: 2 / -1;
-  overflow: auto;
-}
 .sidebar-user {
   color: white;
   position: relative;
@@ -56,18 +55,24 @@ export default {
 .sidebar-user-info i {
   font-size: 0.5rem;
 }
+
 .sidebar-user-info-additional {
   display: flex;
   align-items: center;
   margin-left: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.8rem;
-  color: white;
+  margin-top: 0.2rem;
+  /* margin-bottom: 1rem; */
+  font-size: 0.7rem;
+  color: grey;
+  font-style: italic;
 }
 .sidebar-user-info-additional i {
   color: green;
   font-size: 0.5rem;
   padding-right: 0.3rem;
+}
+.sidebar-user-info h4 {
+  text-transform: uppercase;
 }
 .user-edit-icon {
   position: absolute;
@@ -75,7 +80,8 @@ export default {
   right: 1rem;
   width: 2rem;
   height: 2rem;
-  border: 0.1rem solid white;
+  margin-bottom: 2rem;
+  /* border: 0.1rem solid white; */
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -83,8 +89,8 @@ export default {
   background-color: white;
 }
 .user-edit-icon-actual {
-  color: white;
-  height: 2px;
-}
+  background-color: white;
 
+  height: 4px;
+}
 </style>

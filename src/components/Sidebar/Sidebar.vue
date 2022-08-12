@@ -2,21 +2,28 @@
   <main class="main">
     <section class="sidebar">
       <div class="sidebar-1">
-        <div class="box-1"></div>
-        <div class="box-2"></div>
-        <button class="box-3" @click="setModalActive()">+</button>
-        <!-- <ChannelModal v-show="showModal" /> -->
+        <div class="box-1" v-for="channel in userChannels" :key="channel.key">
+          <avatar
+            :fullname="channel.name"
+            radius="15"
+            size="30"
+            color="#AD1457"
+          ></avatar>
+        </div>
+        <button class="box-3" @click="setModalActive()">
+          <v-icon style="color: #350d36; margin-bottom: 10px">mdi-plus</v-icon>
+        </button>
       </div>
       <!-- SIDEBAR 2 WITH CHANNELS AND PEOPLE/USERS INFO  -->
       <article class="sidebar-2">
         <ConnectedUser />
         <section class="unread">
-          <h4 class="unread-header">
+          <h5 class="unread-header">
             <span class="unread-icons">
               <v-icon style="color: white">mdi-message-fast-outline</v-icon>
             </span>
             All unread
-          </h4>
+          </h5>
           <ul>
             <li>
               <v-icon style="color: white">mdi-dots-horizontal</v-icon>
@@ -33,59 +40,91 @@
             </li>
           </ul>
         </section>
-        <ChannelsInfo
-          Name="CHANNELS"
-          :userChannels="userChannels"
+
+        <!-- //THIS IS FOR THE SHOWING THE LIST OF CHANNELS IN THE SIDEBAR  -->
+        <ChannelsList
+          :type="CHANNEL_TYPE.CHANNEL"
+          name="Channels"
+          :generalizedData="userChannels"
           :showForm="showForm"
           v-on:changeMode="changeScreen($event)"
         />
-        <ChannelsInfo
-          Name="DIRECT MESSAGES"
+        <ChannelsList
+          :type="CHANNEL_TYPE.DIRECT_MESSAGE"
+          name="Direct Messages"
+          :generalizedData="userData"
           :showForm="showForm"
           v-on:changeMode="changeScreen($event)"
         />
       </article>
     </section>
     <component v-bind:is="showForm"></component>
+
     <ChannelChat />
   </main>
 </template>
 
 <script>
 import ConnectedUser from "./ConnectedUser.vue";
-import ChannelsInfo from "../Channels/ChannelsInfo.vue";
-import ChannelChat from "../Messages/ChannelChat.vue";
-
-import { mapActions } from "vuex";
+import ChannelsList from "../Channels/ChannelsList.vue";
+import ChannelChat from "../Channels/ChannelChat.vue";
+import { CHANNEL_TYPE } from "@/services/constants";
+import { mapGetters, mapActions } from "vuex";
 import ChannelModal from "../Channels/ChannelModal.vue";
+import { ref, getDatabase, onValue } from "firebase/database";
+import Avatar from "vue-avatar-component";
 
 export default {
-  watch: {},
   data() {
     return {
+      userData: [],
       clicked: false,
       showForm: "channel-chat",
+      CHANNEL_TYPE: CHANNEL_TYPE,
     };
   },
   name: "Side-bar",
   // mounted() {
   //   this.setDefaultChannel();
   // },
+  computed: mapGetters({
+    userChannels: "publicChannels",
+    currentChannel: "currentChannel",
+    channelNotifCount: "channelNotifCount",
+  }),
+
   methods: {
-    ...mapActions(["fetchChannels"]),
+    ...mapActions(["fetchChannels", "clearChannels"]),
+
     setModalActive() {
       this.showForm = "channel-modal";
     },
     changeScreen(updatedTitle) {
       this.showForm = updatedTitle;
     },
+    getRegisteredUserDataFirebase() {
+      const db = getDatabase();
+      const UsersRef = ref(db, "Users/");
+      this.userData = [];
+      onValue(UsersRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const childData = childSnapshot.val();
+          this.userData.push(childData);
+        });
+      });
+    },
   },
+
   created() {
-    this.fetchChannels();
+    // this.clearChannels();
+    // this.fetchChannels(); //To cater the page reload.
+    //Responsible for getting all registered users information from firebase AUTHENTICATION.
+    this.getRegisteredUserDataFirebase();
   },
   components: {
     ConnectedUser,
-    ChannelsInfo,
+    ChannelsList,
+    Avatar,
     "channel-chat": ChannelChat,
     "channel-modal": ChannelModal,
   },
@@ -131,28 +170,20 @@ ul {
 .sidebar-1 .box-1 {
   margin-top: 1rem;
 }
-.sidebar-1 .box-1,
-.sidebar-1 .box-2 {
+.sidebar-1 .box-1 {
   height: 2rem;
   width: 2rem;
   margin-bottom: 0.5rem;
-  border: 0.125rem solid;
   border-radius: 0.3rem;
 }
-.sidebar-1 .box-1 {
-  background-color: #2eb67d;
-}
-
-.sidebar-1 .box-2 {
-  background-color: #ecb22e;
-}
-.sidebar-1 .box-2:hover,
-.sidebar-1 .box-1:hover {
-  box-shadow: 0 0 0 0.1rem hsl(0, 0%, 100%);
-}
 .sidebar-1 .box-3 {
+  height: 2rem;
+  width: 2rem;
+  padding-top: 2px;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  background-color: lightgrey;
   font-size: 1.5rem;
-  color: white;
 }
 
 /* READ / UNREAD MSGS  */
@@ -175,17 +206,9 @@ ul {
   color: white;
   font-size: 12px;
   margin-left: 23px;
-  padding: 2px;
+  padding: 4px;
   font-style: italic;
   display: block;
   text-align: justify;
 }
 </style>
-
-<!-- ----------------------------------------------------------------------  -->
-<!-- // setDefaultChannel() { // console.log("DID IT MOUNT?"); //
-console.log(this.userChannels[0]) // const [first]=this.userChannels //
-console.log([first]) // if (this.userChannels) { //
-this.$store.dispatch("setCurrentChannel", this.userChannels[0]); //CURRENT
-CHANNEL RETRIEVAL // console.log("working?"); // } else { // console.log("NOT
-WORKING?"); // } // }, -->

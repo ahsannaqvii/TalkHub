@@ -8,54 +8,57 @@
               <v-row>
                 <v-col cols="12" md="8">
                   <v-card-text class="mt-12">
-                    <h1
-                      class="text-center display-2 text--accent-3"
-                      style="color: #ecb22e"
-                    >
+                    <h1 class="header-login" style="color: #350d36">
                       Sign in to AI-Slack
                     </h1>
                     <div class="text-center mt-4">
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-facebook-f</v-icon>
+                      <v-btn class="mx-2" depressed fab color="white">
+                        <img
+                          style="border-radius: 50px; border-style: none"
+                          src="../assets/facebook.jpg"
+                          height="58px"
+                          width="58px"
+                        />
                       </v-btn>
 
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <!-- style="background-color: #ecb22e" -->
-                        <v-icon>fab fa-google-plus-g</v-icon>
-                      </v-btn>
-                      <v-btn class="mx-2" fab color="black" outlined>
-                        <v-icon>fab fa-linkedin-in</v-icon>
+                      <v-btn
+                        class="mx-2"
+                        fab
+                        color="white"
+                        @click="signInWithGoogle"
+                      >
+                        <img src="../assets/google.jpg" height="40px" />
                       </v-btn>
                     </div>
                     <h4 class="text-center mt-4">
                       Ensure your email for registration
                     </h4>
-                    <v-form>
+                    <v-form ref="form">
                       <v-text-field
                         label="Email"
                         name="Email"
                         prepend-icon="email"
                         type="text"
                         v-model.trim="email"
+                        :rules="[rules.required, rules.email]"
                         color="teal accent-3"
                       />
-
                       <v-text-field
                         id="password"
                         label="Password"
                         name="password"
                         prepend-icon="lock"
                         type="password"
+                        :rules="[rules.required, rules.passwordLength]"
                         v-model.trim="password"
                         color="teal accent-3"
                       />
                     </v-form>
-                    <h3 class="text-center mt-4">Forgot your password ?</h3>
                   </v-card-text>
                   <div class="text-center mt-3">
                     <v-btn
                       rounded
-                      style="background-color: #ecb22e"
+                      style="background-color: #350d36"
                       dark
                       @click.prevent="login"
                       >SIGN IN</v-btn
@@ -71,9 +74,7 @@
                       organization
                     </h5>
                   </v-card-text>
-                  <div class="error-ui-message" v-if="hasErrors">
-                    <p v-for="error in errors" :key="error.id">{{ error }}</p>
-                  </div>
+
                   <div class="text-center">
                     <router-link
                       to="/register"
@@ -94,58 +95,64 @@
 
 <script>
 import { mapActions } from "vuex";
+import rules from "@/services/rules/rules";
+import {
+  SignInWithGoogle,
+  SignInWithEmailPassword,
+} from "@/services/firebase/Users";
 
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 export default {
-  methods: {
-    ...mapActions(["setUser", "fetchChannels"]),
-    async login() {
-      this.errors = [];
-
-      if (this.isFormValid) {
-        try {
-          const auth = getAuth();
-          const user = await signInWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
-          console.log("login : ", user);
-          this.setUser(user);
-          // user
-          this.fetchChannels(user);
-          this.$router.push("/");
-        } catch (err) {
-          console.log(err.message);
-          this.errors.push(err.message);
-        }
-      }
-    },
-    isFormValid() {
-      if (this.email.length > 0 && this.password.length > 0) {
-        return true;
-      }
-      return false;
-    },
-  },
-  computed: {
-    hasErrors() {
-      return this.errors.length > 0;
-    },
-  },
   name: "LoginView",
   data: () => ({
-    errors: [],
     step: 1,
     password: "",
     email: "",
+    rules: rules,
   }),
   props: {
     source: String,
   },
+  methods: {
+    ...mapActions(["setUser", "fetchChannels"]),
+
+    //Function designed to help users signin with Google.
+    async signInWithGoogle() {
+      console.log("sign in with google");
+      const user = await SignInWithGoogle();
+      this.setUser(user);
+      this.fetchChannels(user);
+      this.$router.push("/");
+    },
+
+    //Function designed to help users login with email and password.
+    async login() {
+      console.log("sign in with email");
+
+      this.errors = [];
+
+      if (!this.$refs.form.validate()) return;
+      const user = await SignInWithEmailPassword(this.email, this.password);
+      console.log(user);
+      this.setUser(user);
+      this.fetchChannels(user);
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 <style scoped>
+#inspire {
+  font-family: "Ubuntu", sans-serif;
+}
+.header-login {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.googlesignin {
+  background-color: orange;
+  color: orange;
+}
 .error-ui-message {
   display: block;
   height: 50px;
