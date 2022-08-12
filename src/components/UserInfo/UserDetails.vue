@@ -9,22 +9,24 @@
       >
     </section>
     <!-- Displays the initials of User name-->
-    <avatar
-      class="right-sidebar-about-image"
-      :fullname="this.userData.name"
-      radius="10"
-      size="150"
-      color="#2eb67d"
-    ></avatar>
+    <div class="right-sidebar-details">
+      <avatar
+        class="right-sidebar-about-image"
+        :fullname="this.userData.name"
+        radius="10"
+        size="150"
+        color="#AD1457"
+      ></avatar>
 
-    <section class="right-sidebar-about">
-      <article class="right-sidebar-about-details">
-        <p>{{ this.userData.name }}</p>
-        <caption class="right-sidebar-about-position">
-          Frontend Intern
-        </caption>
-      </article>
-    </section>
+      <section class="right-sidebar-about">
+        <article class="right-sidebar-about-details">
+          <p>{{ this.userData.name }}</p>
+          <caption class="right-sidebar-about-position">
+            Frontend Intern
+          </caption>
+        </article>
+      </section>
+    </div>
     <section class="right-sidebar-specific">
       <article class="right-sidebar-specific-details">
         <h6>Display Name</h6>
@@ -92,6 +94,11 @@ export default {
 .right-sidebar {
   overflow: auto;
 }
+/* .right-sidebar-details {
+  justify-content: center;
+  margin: auto;
+  text-align: center;
+} */
 .right-sidebar-header {
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -109,6 +116,7 @@ export default {
   margin-bottom: 0.5rem;
 }
 .right-sidebar-about-image {
+  justify-content: center;
   margin-top: 20px;
 }
 .right-sidebar-header-icon {
@@ -144,8 +152,14 @@ export default {
   color: black;
 }
 .right-sidebar-about-position {
+  font-size: 15px;
   color: grey;
 }
+.right-sidebar-about-timestamp {
+  margin-top: 10px;
+  left: 0;
+}
+
 .right-sidebar-specific {
   text-align: justify;
   margin-left: 10px;

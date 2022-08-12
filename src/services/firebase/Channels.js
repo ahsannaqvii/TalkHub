@@ -5,12 +5,15 @@ import * as firebase from "./firebase";
 export async function getChannels(channelInfo = {}) {
   const allChannels = await firebase.getDataFromFirebase(channelInfo.type);
   console.log(allChannels);
+
   //If specific channels does not exist , return all channels.
   if (!channelInfo.specificChannel) return allChannels;
 
   let specificChannel = "";
   for (let key in allChannels)
     if (allChannels[key].name === channelInfo.name) {
+      //channelInfo.name is the channelID
+
       specificChannel = { channel: allChannels[key], key };
       break;
     }
@@ -24,6 +27,10 @@ export async function pushNewChannel(newChannelData) {
   var parentKey = "";
   //If the channel is 'Direct Messaging' then  the channel shall be updated(without the need of a generated UID)
   if (newChannelData.isDirect) {
+    //This sets the top key value of each data
+    //Channels : {
+    // parentKey : { content , timestamp etc}
+    //}
     parentKey = CHANNEL_KEY.BROADCAST + newChannelData.key;
     firebase.updateExistingChildData(parentKey, newChannelData);
   } else {
@@ -43,3 +50,8 @@ export function updateChannels(databaseParentKey, { channel }) {
     channel
   );
 }
+
+// export function helperFunction(channelInformation) {
+//   console.log("helper func called");
+//   firebase.helperFunction("Channels/", channelInformation);
+// }

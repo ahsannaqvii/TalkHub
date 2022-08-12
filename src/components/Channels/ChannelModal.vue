@@ -19,7 +19,7 @@
         <section class="results">
           <section class="results-header">
             <article class="results-header-content">
-              <h5>5 Recommended Results</h5>
+              <h5>4 Recommended Results</h5>
             </article>
           </section>
           <article class="btn-borderless-header">
@@ -129,7 +129,7 @@ export default {
       this.$store.dispatch("setCurrentChannel", channel.Name);
     },
   },
-  
+
   //Store the existing Channels(Hardcoded channels) once the component is created.
   async created() {
     this.existingChannel = await getChannels({

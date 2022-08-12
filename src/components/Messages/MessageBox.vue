@@ -54,9 +54,6 @@ import { getStorage, uploadBytes } from "firebase/storage";
 import { ref as sRef, getDownloadURL } from "firebase/storage";
 
 export default {
-  props: {
-    messages: Array,
-  },
   data() {
     return {
       message: "",
@@ -68,7 +65,6 @@ export default {
   methods: {
     onFileSelected(event) {
       this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile);
     },
     async sendMessage(event) {
       this.loading = true;
@@ -110,6 +106,8 @@ export default {
       }
 
       this.message = "";
+      this.selectedFile = null;
+      this.fileURL = null;
     },
     createMessage(myDate) {
       //Destructing Object to get Ids, ermail and display Name

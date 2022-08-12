@@ -20,7 +20,7 @@
           v-on:showDetails="showDetails($event)"
         />
       </div>
-      <MessageBox :messages="messages" />
+      <MessageBox />
     </section>
     <UserDetails
       v-if="showUserProfile"
@@ -75,6 +75,7 @@ export default {
     },
     //Instantiate the basic message queue.
     initMessageQueue() {
+      console.log(this.currentChannel.key);
       //Callback function to get the stream of data messages.
       this.unsubcribeMessageQueue = getMessageStream(
         this.currentChannel.key,
@@ -84,12 +85,11 @@ export default {
     //Update the messages everytime data is received.
     refreshMessageQueue(updatedMessages = [], notificationDetails) {
       this.messages = updatedMessages;
-      console.log(notificationDetails);
+      console.log(this.messages);
       this.setchannelNotifications(notificationDetails);
       //For patch case : --personal
       // this.messages=[...this.messages , updatedMessages]
     },
-   
   },
   computed: mapGetters(["currentChannel", "currentUser"]),
 

@@ -5,9 +5,41 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { ref, getDatabase, get, child } from "firebase/database";
+import {
+  ref,
+  getDatabase,
+  get,
+  child,
+  // orderByChild,
+  // equalTo,
+  // query,
+} from "firebase/database";
 import { set, push, onValue } from "firebase/database";
 
+// @params databaseParent is the "channels/"
+// export async function helperFunction(databaseParent, channelInformation) {
+//   console.log(channelInformation);
+//   console.log(databaseParent);
+//   const db = getDatabase();
+//   const dbRef = ref(db, databaseParent);
+//   const queryConstraints = [
+//     orderByChild(channelInformation.name),
+//     equalTo(channelInformation.key),
+//   ];
+//   try {
+//     const dataSnapshot = await get(query(dbRef, ...queryConstraints));
+//     console.log(dataSnapshot);
+//   } catch (e) {
+//     console.log(e.message);
+//   }
+
+//   console.log("ON CHILD ADDED INFORMATION : \n");
+//   console.log(dataSnapshot);
+//   onChildAdded(query(dbRef), (snapshot) => {
+//     console.log("child added");
+//     console.log(snapshot.val()); // Logs newly added child
+//   });
+// }
 //Function designed to get Stream  messages with callback
 export function getStreamingData(
   databaseChildKey,
@@ -21,7 +53,7 @@ export function getStreamingData(
     if (snapshot.val() !== null) {
       const messages = Object.values(snapshot.val());
       callback(messages, {
-        totalMessagesCount: messages.length,
+        getDataFromFirebase: messages.length,
         currentChannelKey: snapshot.key,
       });
     }
@@ -33,9 +65,10 @@ export function getStreamingData(
 export async function getDataFromFirebase(databaseParentKey) {
   //Get the database reference from firebase.
   const databaseRef = ref(getDatabase());
-
   try {
     //Returns the child data of parent eg : "Channels/" , "Messages/"
+    // const snapshot = await get(child(databaseRef, "Channels/"));
+
     const snapshot = await get(child(databaseRef, databaseParentKey));
     if (!snapshot.exists()) return null;
     const data = snapshot.val();
@@ -71,7 +104,6 @@ export async function pushDataFirebase(databaseParentKey, newChannelData) {
   const databaseRef = ref(db, databaseParentKey);
   //Push the data using push() which would create an Unique ID as key and insert the child data.
   const res = await push(databaseRef, newChannelData);
-  console.log(res.key);
   return res.key;
 }
 

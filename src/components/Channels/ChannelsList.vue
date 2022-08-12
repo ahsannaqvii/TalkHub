@@ -68,7 +68,6 @@ export default {
   methods: {
     ...mapActions(["fetchChannels", "setCurrentChannel", "resetNotifications"]),
     getNotifications(channel) {
-      console.log(channel);
       let notif = 0;
       console.log(this.channelNotifCount);
       this.channelNotifCount.forEach((el) => {
@@ -85,8 +84,10 @@ export default {
 
     // @Params: ChannelInfo consist of an ID ,name and users field.
     changeChannel(channelInfo) {
+      console.log(channelInfo);
       this.activeChannel = !this.activeChannel;
       this.resetNotifications(channelInfo);
+
       const {
         uid: currentUserId,
         displayName: currentUserDisplayName,
@@ -94,7 +95,9 @@ export default {
       } = this.currentUser;
 
       if (this.isTypeDM) {
+        //ChannelInfo ID is the opposite user's id
         const channelIdentifier = `${channelInfo.id}-${currentUserId}`;
+
         // List of two users
         const users = [
           {
@@ -110,12 +113,16 @@ export default {
           //If the ids of both the users are same , remove the last inserted user from the arr of users.
           users.pop();
         }
+        const reverseName = `${currentUserId}-${channelInfo.id}`;
+
         let newChannelObj = {
           key: channelIdentifier,
           name: channelInfo.name,
           isDirect: true,
           users,
+          reverseKey: reverseName,
         };
+
         this.$store.dispatch("setChannelInDatabase", newChannelObj);
         this.$store.dispatch("setCurrentChannel", newChannelObj);
       } else {

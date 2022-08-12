@@ -28,7 +28,7 @@
       <v-toolbar-items class="hidden-sm-and-down" transparent>
         <v-row justify="space-around">
           <v-menu bottom origin="center center" transition="scale-transition">
-            <template v-if="getPhotoURL" v-slot:activator="{ on, attrs }">
+            <template v-slot:activator="{ on, attrs }">
               <img
                 v-if="getPhotoURL"
                 :src="`${currentUser.photoURL}`"
@@ -37,9 +37,10 @@
                 v-bind="attrs"
                 v-on="on"
               />
-            </template>
-            <template v-else v-slot:activator="{ on, attrs }">
+              <!-- </template> -->
+              <!-- <template v-else v-slot:activator="{ on, attrs }"> -->
               <avatar
+                v-if="!getPhotoURL"
                 :fullname="currentUser.displayName"
                 class="user-img-wrapper"
                 radius="15"

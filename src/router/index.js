@@ -5,7 +5,6 @@ import LoginView from "../views/Login.vue";
 import RegisterView from "../views/Register.vue";
 import slack from "../views/Slack.vue";
 import { getAuth } from "firebase/auth";
-// import ChannelChat from "../components/Channels/ChannelChat.vue";
 
 Vue.use(VueRouter);
 
@@ -35,12 +34,6 @@ const routes = [
     name: "RegisterView",
     component: RegisterView,
   },
-  // {
-  //   path: "/Channels/:channelID",
-  //   name: "channel-chat", 
-  //   props: true,
-  //   component: ChannelChat,
-  // },
 ];
 
 const router = new VueRouter({

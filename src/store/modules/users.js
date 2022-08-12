@@ -5,6 +5,7 @@ import {
   getChannels,
   updateChannels,
   pushNewChannel,
+  // helperFunction,
 } from "@/services/firebase/Channels";
 import { CHANNEL_KEY } from "@/services/constants";
 import { handleNotifications } from "@/services/NotificationService";
@@ -61,18 +62,33 @@ const actions = {
     // const temp = { ...finalResult };
     // console.log("FINAL COMPARISON :", temp);
   },
-  async setChannelInDatabase(context, newChannelData) {
-    const { users, name } = newChannelData;
 
+  //Options consist of reverseKey
+  async setChannelInDatabase(context, newChannelData) {
+    const { users, name, reverseKey } = newChannelData;
     //Returns the information of specific channel based on 'NAME'
     const specificChannelData = await getChannels({
       name,
       specificChannel: true,
       type: CHANNEL_KEY.BROADCAST,
     });
-
+    // helperFunction(newChannelData);
+    //IF MOMIN LOG IN : AHSAN-MOMIN       (MOMIN-AHHSAN : MSGS  " HELLO , COMMA , ABC ")
     //If channel is not present
+    //AHSAN-MOMIN. REVERSE()
     if (!specificChannelData) {
+      //MOMIN-AHSAN
+
+      //If reverse name exists
+      if (reverseKey) {
+        delete newChannelData["reverseKey"];
+        // eslint-disable-next-line
+        return this.dispatch("setChannelInDatabase", {
+          ...newChannelData,
+          key: reverseKey,
+        });
+      }
+
       //If the user object exists , we will convert that to arr (For the first time data is inserted.)
       if (newChannelData.users && !Array.isArray(newChannelData.users))
         newChannelData.users = [newChannelData.users];
@@ -89,11 +105,13 @@ const actions = {
       // If messagetype is 'Direct Message'
 
       if (newChannelData.isDirect) {
+        // console.log(newChannelData);
         return context.commit("ADD_NEW_CHANNEL", newChannelData);
+        // return context.commit("SET_CURRENT_CHANNEL", currChannel);
       }
       //set the new Direct message channel in UserChannels list.
 
-      //If the message is not private (one to one ):
+      //If the message is not private (one to one):
 
       specificChannelData.channel.users.push(users);
       const { channel, key } = specificChannelData;
