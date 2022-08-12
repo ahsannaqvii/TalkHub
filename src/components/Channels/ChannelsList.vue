@@ -124,7 +124,7 @@ export default {
         };
 
         this.$store.dispatch("setChannelInDatabase", newChannelObj);
-        this.$store.dispatch("setCurrentChannel", newChannelObj);
+        // this.$store.dispatch("setCurrentChannel", newChannelObj);
       } else {
         this.$store.dispatch("setCurrentChannel", channelInfo);
       }

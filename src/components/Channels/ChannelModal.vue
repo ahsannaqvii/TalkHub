@@ -118,6 +118,8 @@ export default {
     //When the user presses 'Join' , addChannel is triggered which in turn sets the values in realtimeDB
     // and in vueX store(currentChannel)
     addChannel(channel) {
+      console.log(typeof channel.Name)
+
       let newChannelObj = {
         name: channel.Name, //Channel Name
         users: {
@@ -126,7 +128,7 @@ export default {
         },
       };
       this.$store.dispatch("setChannelInDatabase", newChannelObj);
-      this.$store.dispatch("setCurrentChannel", channel.Name);
+      // this.$store.dispatch("setCurrentChannel", newChannelObj);
     },
   },
 
