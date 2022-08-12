@@ -10,14 +10,17 @@ export async function getChannels(channelInfo = {}) {
   if (!channelInfo.specificChannel) return allChannels;
 
   let specificChannel = "";
-  for (let key in allChannels)
-    if (allChannels[key].name === channelInfo.name) {
+  // debugger //es-lint
+  for (let key in allChannels) {
+    const variableRef = allChannels[key].isDirect ? 'key' : 'name';
+
+    if (allChannels[key][variableRef] === channelInfo[variableRef]) {
       //channelInfo.name is the channelID
 
       specificChannel = { channel: allChannels[key], key };
       break;
     }
-
+  }
   return specificChannel;
 }
 

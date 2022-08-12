@@ -46,7 +46,6 @@ const actions = {
 
     //Iterate over the array of objects to find the common emails in user's list and current Logged in user email.
 
-    // var finalResult = [];
     for (let key in channelsList) {
       //some is used to pick the current channel's email and current user Email.
       if (
@@ -54,31 +53,23 @@ const actions = {
           (el) => el.email === state.currentUser.email
         )
       ) {
-        // finalResult.push({ ...channelsList[key], key });
         context.commit("SET_USER_CHANNELS", { ...channelsList[key], key });
       }
     }
-    // console.log(finalResult);
-    // const temp = { ...finalResult };
-    // console.log("FINAL COMPARISON :", temp);
   },
 
   //Options consist of reverseKey
   async setChannelInDatabase(context, newChannelData) {
-    const { users, name, reverseKey } = newChannelData;
+    const { users, reverseKey } = newChannelData;
+
     //Returns the information of specific channel based on 'NAME'
     const specificChannelData = await getChannels({
-      name,
+      ...newChannelData,
       specificChannel: true,
       type: CHANNEL_KEY.BROADCAST,
     });
-    // helperFunction(newChannelData);
-    //IF MOMIN LOG IN : AHSAN-MOMIN       (MOMIN-AHHSAN : MSGS  " HELLO , COMMA , ABC ")
-    //If channel is not present
-    //AHSAN-MOMIN. REVERSE()
-    if (!specificChannelData) {
-      //MOMIN-AHSAN
 
+    if (!specificChannelData) {
       //If reverse name exists
       if (reverseKey) {
         delete newChannelData["reverseKey"];
@@ -102,29 +93,40 @@ const actions = {
 
     //Append the user's list if channel exists.
     else {
-      // If messagetype is 'Direct Message'
+      // const channelActions =
+      (() => {
+        // If messagetype is 'Direct Message'
 
-      if (newChannelData.isDirect) {
-        // console.log(newChannelData);
-        return context.commit("ADD_NEW_CHANNEL", newChannelData);
-        // return context.commit("SET_CURRENT_CHANNEL", currChannel);
-      }
-      //set the new Direct message channel in UserChannels list.
+        if (newChannelData.isDirect) {
+          return context.commit("ADD_NEW_CHANNEL", newChannelData);
+          //  context.commit("SET_CURRENT_CHANNEL", currChannel);
+        }
+        //set the new Direct message channel in UserChannels list.
 
-      //If the message is not private (one to one):
+        //If the message is not private (one to one):
 
-      specificChannelData.channel.users.push(users);
-      const { channel, key } = specificChannelData;
+        specificChannelData.channel.users.push(users);
+        const { channel, key } = specificChannelData;
 
-      updateChannels(specificChannelData.key, specificChannelData);
-      channel["key"] = key;
-      context.commit("ADD_NEW_CHANNEL", channel);
+        updateChannels(specificChannelData.key, specificChannelData);
+        channel["key"] = key; //This would reflect at channelModal.vue line 129
+        context.commit("ADD_NEW_CHANNEL", channel);
+      })();
+
+      // channelActions()
     }
+
+    // context.commit("SET_CURRENT_CHANNEL", currChannel);
+    context.dispatch("setCurrentChannel", newChannelData);
   },
   //Set the current active channel of user and pushes the channel into array of channels.
   setCurrentChannel(context, currChannel) {
+    console.log(typeof currChannel);
+    console.log(currChannel);
+
     context.commit("SET_CURRENT_CHANNEL", currChannel);
   },
+
   setchannelNotifications(context, notifDetails) {
     const notifs = handleNotifications(
       notifDetails,
@@ -166,6 +168,7 @@ const mutations = {
     state.userChannels.push(channelData);
   },
   SET_CURRENT_CHANNEL: function (state, CurrChannel) {
+    console.log("SET_CURRENT_CHANNEL", { CurrChannel });
     state.currentChannel = CurrChannel;
   },
 };

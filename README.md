@@ -18,6 +18,11 @@ npm run serve
 npm run build
 ```
 
+### Lints and fixes files
+```
+npm run lint
+```
+
 ## UI of the Project
 
   ## 1. Login Screen
@@ -28,9 +33,3 @@ npm run build
   
   ## 3.Home Screen
    ![home-screen](https://user-images.githubusercontent.com/29493186/184323096-4422b7b9-d4e1-4a10-a565-a8fe3acef4fe.png)
-
-  
-    
-  
-  
-
